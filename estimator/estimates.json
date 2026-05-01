@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "id": "1777663522091",
+    "name": "Inclined Analytics (Test)",
+    "totalMonths": 8,
+    "billingAmount": 64800,
+    "notes": "HR consulting",
+    "roles": [
+      {
+        "id": "08e6e9",
+        "title": "Account Manager",
+        "hours": 40,
+        "rate": 112,
+        "months": 8
+      },
+      {
+        "id": "aihsbk",
+        "title": "Sr. Consultant",
+        "hours": 384,
+        "rate": 95,
+        "months": 8
+      }
+    ],
+    "author": "Abdul",
+    "savedAt": "May 1, 2026"
+  }
+]
