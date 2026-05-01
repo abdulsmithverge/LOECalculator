@@ -8,29 +8,17 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #f5f4f0;
-    --surface: #ffffff;
-    --surface2: #f0efe9;
-    --border: #e0dfd8;
-    --border-strong: #c8c7be;
-    --text: #1a1a18;
-    --text-muted: #7a7970;
-    --text-faint: #b0afa6;
-    --accent: #1a1a18;
-    --accent-fg: #f5f4f0;
-    --green: #1a6644;
-    --green-bg: #e6f2ec;
-    --green-border: #b6dfc9;
-    --red: #8c2a1c;
-    --red-bg: #f5e8e6;
-    --red-border: #e8c0b8;
-    --mono: 'DM Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
+    --bg: #f5f4f0; --surface: #ffffff; --surface2: #f0efe9;
+    --border: #e0dfd8; --border-strong: #c8c7be;
+    --text: #1a1a18; --text-muted: #7a7970; --text-faint: #b0afa6;
+    --accent: #1a1a18; --accent-fg: #f5f4f0;
+    --green: #1a6644; --green-bg: #e6f2ec; --green-border: #b6dfc9;
+    --red: #8c2a1c; --red-bg: #f5e8e6; --red-border: #e8c0b8;
+    --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.5; }
 
-  /* Header */
   .header { background: var(--accent); color: var(--accent-fg); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
   .header-brand { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; }
   .header-right { display: flex; align-items: center; gap: 14px; }
@@ -42,7 +30,6 @@
   .header-btn { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; color: rgba(255,255,255,0.7); font-family: var(--mono); font-size: 11px; padding: 4px 10px; cursor: pointer; letter-spacing: 0.04em; text-decoration: none; display: inline-flex; align-items: center; }
   .header-btn:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
 
-  /* Setup overlay */
   .overlay { position: fixed; inset: 0; background: rgba(26,26,24,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
   .overlay.hidden { display: none; }
   .setup-card { background: var(--surface); border-radius: 12px; padding: 2rem; width: 100%; max-width: 480px; }
@@ -59,13 +46,11 @@
   .setup-error { font-family: var(--mono); font-size: 12px; color: var(--red); margin-top: 10px; display: none; }
   .setup-error.show { display: block; }
 
-  /* Page */
   .page { max-width: 960px; margin: 0 auto; padding: 2.5rem 2rem; }
   .topbar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap; }
   .page-title { font-size: 26px; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
   .page-meta { font-family: var(--mono); font-size: 12px; color: var(--text-faint); }
 
-  /* Summary strip */
   .summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 2.5rem; }
   .summary-cell { background: var(--surface); padding: 1rem 1.25rem; }
   .summary-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 5px; }
@@ -73,7 +58,6 @@
   .summary-value.pos { color: var(--green); }
   .summary-value.neg { color: var(--red); }
 
-  /* Controls */
   .controls { display: flex; gap: 10px; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
   .search-wrap { position: relative; flex: 1; min-width: 180px; }
   .search-wrap input { width: 100%; height: 36px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px 0 32px; font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--surface); outline: none; }
@@ -83,13 +67,11 @@
   .sort-select { height: 36px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; font-family: var(--mono); font-size: 12px; color: var(--text-muted); background: var(--surface); outline: none; cursor: pointer; }
   .count-label { font-family: var(--mono); font-size: 12px; color: var(--text-faint); white-space: nowrap; }
 
-  /* Buttons */
   .btn { height: 36px; padding: 0 16px; border-radius: 6px; font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid transparent; }
   .btn-ghost { background: transparent; border-color: var(--border-strong); color: var(--text-muted); font-family: var(--mono); font-size: 12px; }
   .btn-ghost:hover { background: var(--surface2); color: var(--text); }
   .btn-ghost:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* Engagement cards */
   .eng-list { display: flex; flex-direction: column; gap: 8px; }
   .eng-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.15s; }
   .eng-card:hover { border-color: var(--border-strong); }
@@ -109,11 +91,10 @@
   .eng-profit.pos { color: var(--green); }
   .eng-profit.neg { color: var(--red); }
 
-  /* Expanded detail */
   .eng-detail { display: none; border-top: 1px solid var(--border); background: var(--bg); padding: 20px; }
   .eng-card.open .eng-detail { display: block; }
 
-  /* Engagement totals grid */
+  /* Engagement totals */
   .totals-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
   .totals-cell { background: var(--surface); padding: 12px 14px; }
   .totals-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 4px; }
@@ -121,7 +102,7 @@
   .totals-value.pos { color: var(--green); }
   .totals-value.neg { color: var(--red); }
 
-  /* Per-role breakdown */
+  /* Role breakdown */
   .roles-section-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 10px; }
   .role-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
   .role-row { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
@@ -129,30 +110,22 @@
   .role-row-chevron { font-size: 10px; color: var(--text-faint); transition: transform 0.2s; flex-shrink: 0; }
   .role-row.open .role-row-chevron { transform: rotate(90deg); }
   .role-row-name { font-size: 13px; font-weight: 500; flex: 1; }
-  .role-row-summary { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+  .role-row-summary { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
   .role-row-stat { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
-  .role-row-badge { display: inline-block; font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
-  .role-row-badge.pos { background: var(--green-bg); color: var(--green); }
-  .role-row-badge.neg { background: var(--red-bg); color: var(--red); }
   .role-row-detail { display: none; border-top: 1px solid var(--border); padding: 12px 14px; background: var(--bg); }
   .role-row.open .role-row-detail { display: block; }
   .role-detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
   .role-detail-cell { background: var(--surface); padding: 10px 12px; }
   .role-detail-label { font-family: var(--mono); font-size: 10px; color: var(--text-faint); margin-bottom: 3px; letter-spacing: 0.04em; text-transform: uppercase; }
   .role-detail-value { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--text); }
-  .role-detail-value.pos { color: var(--green); }
-  .role-detail-value.neg { color: var(--red); }
 
-  /* Notes + footer */
   .detail-notes { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
   .detail-notes-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 5px; }
   .detail-footer { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--text-faint); }
-
   .state-msg { text-align: center; padding: 5rem 1rem; font-family: var(--mono); font-size: 13px; color: var(--text-faint); line-height: 2; }
 
   @media (max-width: 700px) {
-    .summary-strip { grid-template-columns: 1fr 1fr; }
-    .totals-grid { grid-template-columns: 1fr 1fr; }
+    .summary-strip, .totals-grid { grid-template-columns: 1fr 1fr; }
     .role-detail-grid { grid-template-columns: 1fr 1fr; }
     .eng-right .badge { display: none; }
     .page { padding: 1.5rem 1rem; }
@@ -165,7 +138,6 @@
 </head>
 <body>
 
-<!-- Setup overlay -->
 <div class="overlay" id="setup-overlay">
   <div class="setup-card">
     <h2 class="setup-title">Connect to GitHub</h2>
@@ -195,14 +167,10 @@
   </div>
 </div>
 
-<!-- Header -->
 <header class="header">
   <span class="header-brand">Estimates Dashboard</span>
   <div class="header-right">
-    <span class="sync-status loading" id="sync-status">
-      <span class="sync-dot"></span>
-      <span id="sync-text">not connected</span>
-    </span>
+    <span class="sync-status loading" id="sync-status"><span class="sync-dot"></span><span id="sync-text">not connected</span></span>
     <a href="index.html" class="header-btn">&#8592; Estimator</a>
     <button class="header-btn" onclick="openSettings()">settings</button>
   </div>
@@ -258,29 +226,23 @@
   function pct(n) { if (!isFinite(n)) return '—'; return n.toFixed(1) + '%'; }
 
   function deriveRole(r) {
-    const costs  = (r.hours || 0) * (r.rate || 0);
-    const profit = (r.billing || 0) - costs;
-    const margin = r.billing > 0 ? (profit / r.billing) * 100 : NaN;
-    const hrsMonth = (r.hrsWeek || 0) * (52 / 12);
-    return { costs, profit, margin, hrsMonth };
+    const costs    = (r.hours || 0) * (r.rate || 0);
+    const hrsWeek  = (r.hours && r.months) ? (r.hours / r.months) / 4 : null;
+    const hrsMonth = hrsWeek ? hrsWeek * 4 : null;
+    return { costs, hrsWeek, hrsMonth };
   }
 
-  function deriveTotals(roles) {
-    const totalBilling = (roles || []).reduce((s, r) => s + (r.billing || 0), 0);
-    const totalCosts   = (roles || []).reduce((s, r) => s + (r.hours || 0) * (r.rate || 0), 0);
-    const totalHours   = (roles || []).reduce((s, r) => s + (r.hours || 0), 0);
-    const netProfit    = totalBilling - totalCosts;
-    const margin       = totalBilling > 0 ? (netProfit / totalBilling) * 100 : NaN;
-    return { totalBilling, totalCosts, totalHours, netProfit, margin };
+  function deriveTotals(roles, billingAmount) {
+    const totalCosts  = (roles || []).reduce((s, r) => s + (r.hours || 0) * (r.rate || 0), 0);
+    const totalHours  = (roles || []).reduce((s, r) => s + (r.hours || 0), 0);
+    const billing     = billingAmount || 0;
+    const netProfit   = billing - totalCosts;
+    const margin      = billing > 0 ? (netProfit / billing) * 100 : NaN;
+    return { totalCosts, totalHours, billing, netProfit, margin };
   }
 
-  function setSyncStatus(state, text) {
-    const el = document.getElementById('sync-status');
-    el.className = 'sync-status ' + state;
-    document.getElementById('sync-text').textContent = text;
-  }
+  function setSyncStatus(state, text) { const el = document.getElementById('sync-status'); el.className = 'sync-status ' + state; document.getElementById('sync-text').textContent = text; }
 
-  /* ── Setup ── */
   function openSettings() {
     const cfg = loadConfig() || {};
     document.getElementById('setup-token').value = cfg.token || '';
@@ -315,7 +277,6 @@
     await fetchEstimates();
   }
 
-  /* ── Fetch ── */
   async function fetchEstimates() {
     if (!config) return;
     setSyncStatus('loading', 'loading…');
@@ -334,155 +295,121 @@
     document.getElementById('refresh-btn').disabled = false;
   }
 
-  /* ── Summary ── */
   function renderSummary(estimates) {
     if (!estimates.length) { document.getElementById('summary-strip').style.display = 'none'; return; }
     document.getElementById('summary-strip').style.display = '';
     let tb = 0, tc = 0, tp = 0;
-    estimates.forEach(e => { const t = deriveTotals(e.roles); tb += t.totalBilling; tc += t.totalCosts; tp += t.netProfit; });
+    estimates.forEach(e => { const t = deriveTotals(e.roles, e.billingAmount); tb += t.billing; tc += t.totalCosts; tp += t.netProfit; });
     document.getElementById('sum-count').textContent   = estimates.length;
     document.getElementById('sum-billing').textContent = currency(tb);
     document.getElementById('sum-costs').textContent   = currency(tc);
     const el = document.getElementById('sum-profit');
-    el.textContent = currency(tp);
-    el.className = 'summary-value ' + (tp >= 0 ? 'pos' : 'neg');
+    el.textContent = currency(tp); el.className = 'summary-value ' + (tp >= 0 ? 'pos' : 'neg');
   }
 
-  /* ── Filter/sort ── */
   function getFiltered() {
     const q    = (document.getElementById('search-input').value || '').toLowerCase();
     const sort = document.getElementById('sort-select').value;
     let list = allEstimates.filter(e => {
       if (!q) return true;
       const roleText = (e.roles || []).map(r => r.title || '').join(' ');
-      return (e.name || '').toLowerCase().includes(q) || roleText.toLowerCase().includes(q) || (e.notes || '').toLowerCase().includes(q) || (e.author || '').toLowerCase().includes(q);
+      return (e.name||'').toLowerCase().includes(q) || roleText.toLowerCase().includes(q) || (e.notes||'').toLowerCase().includes(q) || (e.author||'').toLowerCase().includes(q);
     });
     list = list.slice().sort((a, b) => {
-      const ta = deriveTotals(a.roles), tb = deriveTotals(b.roles);
+      const ta = deriveTotals(a.roles, a.billingAmount), tb = deriveTotals(b.roles, b.billingAmount);
       if (sort === 'newest')      return b.id - a.id;
       if (sort === 'oldest')      return a.id - b.id;
-      if (sort === 'margin-desc') return (isFinite(tb.margin) ? tb.margin : -Infinity) - (isFinite(ta.margin) ? ta.margin : -Infinity);
-      if (sort === 'margin-asc')  return (isFinite(ta.margin) ? ta.margin : Infinity) - (isFinite(tb.margin) ? tb.margin : Infinity);
+      if (sort === 'margin-desc') return (isFinite(tb.margin)?tb.margin:-Infinity)-(isFinite(ta.margin)?ta.margin:-Infinity);
+      if (sort === 'margin-asc')  return (isFinite(ta.margin)?ta.margin:Infinity)-(isFinite(tb.margin)?tb.margin:Infinity);
       if (sort === 'profit-desc') return tb.netProfit - ta.netProfit;
       if (sort === 'profit-asc')  return ta.netProfit - tb.netProfit;
-      if (sort === 'name-asc')    return (a.name || '').localeCompare(b.name || '');
+      if (sort === 'name-asc')    return (a.name||'').localeCompare(b.name||'');
       return 0;
     });
     return list;
   }
 
-  function renderAll() {
-    renderSummary(allEstimates);
-    document.getElementById('controls').style.display = allEstimates.length ? '' : 'none';
-    renderList();
-    document.getElementById('page-meta').textContent = allEstimates.length
-      ? 'Last refreshed ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-      : 'No estimates on file yet';
-  }
+  function renderAll() { renderSummary(allEstimates); document.getElementById('controls').style.display = allEstimates.length ? '' : 'none'; renderList(); document.getElementById('page-meta').textContent = allEstimates.length ? 'Last refreshed ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : 'No estimates on file yet'; }
 
   function renderList() {
     const list = getFiltered();
-    document.getElementById('count-label').textContent = list.length === allEstimates.length
-      ? `${list.length} engagement${list.length !== 1 ? 's' : ''}`
-      : `${list.length} of ${allEstimates.length}`;
-
+    document.getElementById('count-label').textContent = list.length === allEstimates.length ? `${list.length} engagement${list.length!==1?'s':''}` : `${list.length} of ${allEstimates.length}`;
     const container = document.getElementById('eng-list');
-    const openEngIds = new Set([...container.querySelectorAll('.eng-card.open')].map(el => el.dataset.id));
+    const openEngIds  = new Set([...container.querySelectorAll('.eng-card.open')].map(el => el.dataset.id));
     const openRoleIds = new Set([...container.querySelectorAll('.role-row.open')].map(el => el.dataset.rid));
 
-    if (!list.length) {
-      container.innerHTML = allEstimates.length === 0
-        ? '<div class="state-msg">No estimates saved yet.<br>Head to the estimator to create the first one.</div>'
-        : '<div class="state-msg">No engagements match your search.</div>';
-      return;
-    }
+    if (!list.length) { container.innerHTML = allEstimates.length === 0 ? '<div class="state-msg">No estimates saved yet.<br>Head to the estimator to create the first one.</div>' : '<div class="state-msg">No engagements match your search.</div>'; return; }
 
     container.innerHTML = '';
     list.forEach(est => {
-      const t = deriveTotals(est.roles || []);
+      const t = deriveTotals(est.roles || [], est.billingAmount);
       const isOpen = openEngIds.has(est.id);
       const badgeClass = isFinite(t.margin) ? (t.margin >= 0 ? 'badge-pos' : 'badge-neg') : 'badge-neutral';
       const profitClass = t.netProfit >= 0 ? 'pos' : 'neg';
       const roleCount = (est.roles || []).length;
 
-      const card = document.createElement('div');
-      card.className = 'eng-card' + (isOpen ? ' open' : '');
-      card.dataset.id = est.id;
-
-      // Build role rows HTML
       const roleRowsHtml = (est.roles || []).map(r => {
         const rd = deriveRole(r);
         const rOpen = openRoleIds.has(r.id);
-        const rBadge = isFinite(rd.margin) ? (rd.margin >= 0 ? 'pos' : 'neg') : 'pos';
         return `
-          <div class="role-row${rOpen ? ' open' : ''}" data-rid="${r.id}">
+          <div class="role-row${rOpen?' open':''}" data-rid="${r.id}">
             <div class="role-row-header">
               <span class="role-row-chevron">&#9658;</span>
               <span class="role-row-name">${r.title || 'Untitled role'}</span>
               <div class="role-row-summary">
-                <span class="role-row-stat">${r.hours || 0}h</span>
-                <span class="role-row-badge ${rBadge}">${isFinite(rd.margin) ? pct(rd.margin) : 'n/a'} margin</span>
-                <span class="role-row-stat" style="font-weight:500;color:${rd.profit >= 0 ? 'var(--green)' : 'var(--red)'}">${currency(rd.profit)}</span>
+                <span class="role-row-stat">${r.hours||0}h</span>
+                <span class="role-row-stat">${currency(rd.costs)} costs</span>
               </div>
             </div>
             <div class="role-row-detail">
               <div class="role-detail-grid">
-                <div class="role-detail-cell"><div class="role-detail-label">Billing</div><div class="role-detail-value">${currency(r.billing)}</div></div>
-                <div class="role-detail-cell"><div class="role-detail-label">Verge costs</div><div class="role-detail-value">${currency(rd.costs)}</div></div>
-                <div class="role-detail-cell"><div class="role-detail-label">Net profit</div><div class="role-detail-value ${rBadge}">${currency(rd.profit)}</div></div>
-                <div class="role-detail-cell"><div class="role-detail-label">Margin</div><div class="role-detail-value ${rBadge}">${isFinite(rd.margin) ? pct(rd.margin) : '—'}</div></div>
-                <div class="role-detail-cell"><div class="role-detail-label">Total hours</div><div class="role-detail-value">${r.hours || '—'}</div></div>
-                <div class="role-detail-cell"><div class="role-detail-label">Hrs / week</div><div class="role-detail-value">${r.hrsWeek || '—'}</div></div>
-                <div class="role-detail-cell"><div class="role-detail-label">Hrs / month</div><div class="role-detail-value">${rd.hrsMonth > 0 ? rd.hrsMonth.toFixed(1) : '—'}</div></div>
+                <div class="role-detail-cell"><div class="role-detail-label">Total hours</div><div class="role-detail-value">${r.hours||'—'}</div></div>
                 <div class="role-detail-cell"><div class="role-detail-label">Hourly rate</div><div class="role-detail-value">${currency(r.rate)}/hr</div></div>
+                <div class="role-detail-cell"><div class="role-detail-label">Verge costs</div><div class="role-detail-value">${currency(rd.costs)}</div></div>
+                <div class="role-detail-cell"><div class="role-detail-label">Hrs / week</div><div class="role-detail-value">${rd.hrsWeek?rd.hrsWeek.toFixed(1):'—'}</div></div>
               </div>
             </div>
-          </div>
-        `;
+          </div>`;
       }).join('');
 
+      const card = document.createElement('div');
+      card.className = 'eng-card' + (isOpen ? ' open' : '');
+      card.dataset.id = est.id;
       card.innerHTML = `
         <div class="eng-header">
           <span class="eng-chevron">&#9658;</span>
           <div class="eng-title-block">
             <div class="eng-title">${est.name}</div>
-            <div class="eng-subtitle">${roleCount} role${roleCount !== 1 ? 's' : ''} &bull; ${est.totalMonths || 0}mo &bull; ${t.totalHours}h total</div>
+            <div class="eng-subtitle">${roleCount} role${roleCount!==1?'s':''} &bull; ${est.totalMonths||0}mo &bull; ${t.totalHours}h total</div>
           </div>
           <div class="eng-right">
-            <span class="badge ${badgeClass}">${isFinite(t.margin) ? pct(t.margin) : 'n/a'} margin</span>
+            <span class="badge ${badgeClass}">${isFinite(t.margin)?pct(t.margin):'n/a'} margin</span>
             <span class="eng-profit ${profitClass}">${currency(t.netProfit)}</span>
           </div>
         </div>
         <div class="eng-detail">
           <div class="totals-grid">
-            <div class="totals-cell"><div class="totals-label">Total billing</div><div class="totals-value">${currency(t.totalBilling)}</div></div>
+            <div class="totals-cell"><div class="totals-label">Total billing</div><div class="totals-value">${currency(t.billing)}</div></div>
             <div class="totals-cell"><div class="totals-label">Total costs</div><div class="totals-value">${currency(t.totalCosts)}</div></div>
             <div class="totals-cell"><div class="totals-label">Net profit</div><div class="totals-value ${profitClass}">${currency(t.netProfit)}</div></div>
-            <div class="totals-cell"><div class="totals-label">Profit margin</div><div class="totals-value ${profitClass}">${isFinite(t.margin) ? pct(t.margin) : '—'}</div></div>
+            <div class="totals-cell"><div class="totals-label">Profit margin</div><div class="totals-value ${profitClass}">${isFinite(t.margin)?pct(t.margin):'—'}</div></div>
           </div>
           <div class="roles-section-label">Role breakdown</div>
           <div class="role-rows">${roleRowsHtml}</div>
-          ${est.notes ? `<div class="detail-notes"><div class="detail-notes-label">Notes</div>${est.notes}</div>` : ''}
+          ${est.notes?`<div class="detail-notes"><div class="detail-notes-label">Notes</div>${est.notes}</div>`:''}
           <div class="detail-footer">
-            <span>Saved by ${est.author || 'unknown'}</span>
-            <span>${est.savedAt || ''}</span>
+            <span>Saved by ${est.author||'unknown'}</span>
+            <span>${est.savedAt||''}</span>
           </div>
         </div>
       `;
 
-      // Toggle engagement
       card.querySelector('.eng-header').addEventListener('click', () => card.classList.toggle('open'));
-
-      // Toggle individual roles
-      card.querySelectorAll('.role-row-header').forEach(rh => {
-        rh.addEventListener('click', e => { e.stopPropagation(); rh.closest('.role-row').classList.toggle('open'); });
-      });
-
+      card.querySelectorAll('.role-row-header').forEach(rh => { rh.addEventListener('click', e => { e.stopPropagation(); rh.closest('.role-row').classList.toggle('open'); }); });
       container.appendChild(card);
     });
   }
 
-  /* ── Init ── */
   if (config) { document.getElementById('setup-overlay').classList.add('hidden'); setSyncStatus('loading', 'loading…'); fetchEstimates(); }
   else { openSettings(); }
 </script>

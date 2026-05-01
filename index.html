@@ -30,7 +30,6 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.5; }
 
-  /* Header */
   .header { background: var(--accent); color: var(--accent-fg); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
   .header-brand { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; }
   .header-right { display: flex; align-items: center; gap: 14px; }
@@ -39,10 +38,9 @@
   .sync-status.ok { color: #6fcfa0; opacity: 1; }
   .sync-status.err { color: #f08080; opacity: 1; }
   .sync-status.loading { color: #f5f4f0; opacity: 0.5; }
-  .header-btn { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; color: rgba(255,255,255,0.7); font-family: var(--mono); font-size: 11px; padding: 4px 10px; cursor: pointer; letter-spacing: 0.04em; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+  .header-btn { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; color: rgba(255,255,255,0.7); font-family: var(--mono); font-size: 11px; padding: 4px 10px; cursor: pointer; letter-spacing: 0.04em; text-decoration: none; display: inline-flex; align-items: center; }
   .header-btn:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
 
-  /* Setup overlay */
   .overlay { position: fixed; inset: 0; background: rgba(26,26,24,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
   .overlay.hidden { display: none; }
   .setup-card { background: var(--surface); border-radius: 12px; padding: 2rem; width: 100%; max-width: 480px; }
@@ -59,17 +57,16 @@
   .setup-error { font-family: var(--mono); font-size: 12px; color: var(--red); margin-top: 10px; display: none; }
   .setup-error.show { display: block; }
 
-  /* Layout */
   .layout { display: grid; grid-template-columns: 1fr 320px; min-height: calc(100vh - 56px); }
   .main { padding: 2rem; border-right: 1px solid var(--border); overflow-y: auto; }
   .page-title { font-size: 22px; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
   .page-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 2rem; font-family: var(--mono); }
 
-  /* Form sections */
   .form-section { margin-bottom: 2rem; }
   .form-section-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
   .field-grid { display: grid; gap: 12px; }
   .field-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .field-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
   .field { display: flex; flex-direction: column; gap: 5px; }
   .field label { font-size: 11px; font-family: var(--mono); color: var(--text-muted); letter-spacing: 0.04em; }
   .field input { height: 38px; border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 0 10px; font-family: var(--mono); font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; width: 100%; }
@@ -82,20 +79,23 @@
 
   /* Roles */
   .roles-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
-  .role-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; position: relative; }
+  .role-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
   .role-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .role-card-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
   .role-remove-btn { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 14px; padding: 2px 4px; line-height: 1; }
   .role-remove-btn:hover { color: var(--red); }
   .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .role-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .role-calcs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
   .role-calc { background: var(--surface); border-radius: 6px; padding: 8px 10px; }
-  .role-calc-label { font-family: var(--mono); font-size: 10px; color: var(--text-faint); margin-bottom: 2px; letter-spacing: 0.04em; }
+  .role-calc-label { font-family: var(--mono); font-size: 10px; color: var(--text-faint); margin-bottom: 2px; letter-spacing: 0.04em; text-transform: uppercase; }
   .role-calc-value { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-muted); }
   .add-role-btn { display: flex; align-items: center; gap: 7px; background: none; border: 1px dashed var(--border-strong); border-radius: 8px; padding: 10px 16px; cursor: pointer; color: var(--text-muted); font-family: var(--sans); font-size: 14px; width: 100%; transition: border-color 0.15s, color 0.15s; }
   .add-role-btn:hover { border-color: var(--text-muted); color: var(--text); }
 
-  /* Totals metrics */
+  /* Engagement-level billing */
+  .billing-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Metrics */
   .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
   .metric { background: var(--surface); padding: 1.1rem 1rem; }
   .metric-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 5px; }
@@ -103,7 +103,6 @@
   .metric-value.pos { color: var(--green); }
   .metric-value.neg { color: var(--red); }
 
-  /* Buttons */
   .btn { height: 38px; padding: 0 18px; border-radius: 6px; font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: opacity 0.15s, background 0.15s; }
   .btn-primary { background: var(--accent); color: var(--accent-fg); }
   .btn-primary:hover { opacity: 0.82; }
@@ -115,7 +114,6 @@
   .save-flash.show { opacity: 1; }
   .save-flash.err { color: var(--red); opacity: 1; }
 
-  /* Sidebar */
   .sidebar { background: var(--surface); display: flex; flex-direction: column; }
   .sidebar-header { padding: 1.25rem 1.5rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .sidebar-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
@@ -145,10 +143,9 @@
   @media (max-width: 860px) {
     .layout { grid-template-columns: 1fr; }
     .main { border-right: none; border-bottom: 1px solid var(--border); }
-    .role-grid-3 { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 520px) {
-    .field-grid.cols-2, .role-grid, .role-grid-3 { grid-template-columns: 1fr; }
+    .field-grid.cols-2, .field-grid.cols-3, .role-grid, .role-calcs, .billing-row { grid-template-columns: 1fr; }
     .metrics { grid-template-columns: 1fr; }
     .header { padding: 0 1rem; }
     .main { padding: 1.25rem; }
@@ -157,7 +154,6 @@
 </head>
 <body>
 
-<!-- Setup overlay -->
 <div class="overlay" id="setup-overlay">
   <div class="setup-card">
     <h2 class="setup-title">Connect to GitHub</h2>
@@ -169,7 +165,7 @@
     </div>
     <div class="setup-field">
       <label>Repo owner / org</label>
-      <input type="text" id="setup-owner" placeholder="your-org" />
+      <input type="text" id="setup-owner" placeholder="abdulsmithverge" />
     </div>
     <div class="setup-field">
       <label>Repo name</label>
@@ -192,14 +188,10 @@
   </div>
 </div>
 
-<!-- Header -->
 <header class="header">
   <span class="header-brand">Engagement Estimator</span>
   <div class="header-right">
-    <span class="sync-status loading" id="sync-status">
-      <span class="sync-dot"></span>
-      <span id="sync-text">not connected</span>
-    </span>
+    <span class="sync-status loading" id="sync-status"><span class="sync-dot"></span><span id="sync-text">not connected</span></span>
     <a href="dashboard.html" class="header-btn">Dashboard &#8594;</a>
     <button class="header-btn" onclick="openSettings()">settings</button>
   </div>
@@ -210,7 +202,6 @@
     <h1 class="page-title">New estimate</h1>
     <p class="page-subtitle" id="editing-label">Fill in the fields below — totals update automatically</p>
 
-    <!-- Engagement details -->
     <div class="form-section">
       <div class="form-section-label">Engagement details</div>
       <div class="field-grid cols-2">
@@ -231,7 +222,6 @@
       </div>
     </div>
 
-    <!-- Roles -->
     <div class="form-section">
       <div class="form-section-label">Roles</div>
       <div class="roles-list" id="roles-list"></div>
@@ -240,35 +230,27 @@
       </button>
     </div>
 
-    <!-- Engagement totals -->
     <div class="form-section">
-      <div class="form-section-label">Engagement totals</div>
-      <div class="metrics">
-        <div class="metric">
-          <div class="metric-label">Total billing</div>
-          <div class="metric-value" id="m-billing">—</div>
+      <div class="form-section-label">Billing &amp; margin</div>
+      <div class="billing-row">
+        <div class="field">
+          <label>Total billing amount</label>
+          <input type="number" id="billing-amount" placeholder="0.00" min="0" step="0.01" oninput="calcTotals()" />
         </div>
-        <div class="metric">
-          <div class="metric-label">Total Verge costs</div>
-          <div class="metric-value" id="m-costs">—</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">Net profit</div>
-          <div class="metric-value" id="m-profit">—</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">Profit margin</div>
-          <div class="metric-value" id="m-margin">—</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">Total hours</div>
-          <div class="metric-value" id="m-hours">—</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">Roles</div>
-          <div class="metric-value" id="m-roles">—</div>
+        <div class="field">
+          <label>Total Verge costs <span style="color:var(--text-faint)">(calc)</span></label>
+          <input type="text" id="out-total-costs" readonly placeholder="—" />
         </div>
       </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">Total billing</div><div class="metric-value" id="m-billing">—</div></div>
+      <div class="metric"><div class="metric-label">Total Verge costs</div><div class="metric-value" id="m-costs">—</div></div>
+      <div class="metric"><div class="metric-label">Net profit</div><div class="metric-value" id="m-profit">—</div></div>
+      <div class="metric"><div class="metric-label">Profit margin</div><div class="metric-value" id="m-margin">—</div></div>
+      <div class="metric"><div class="metric-label">Total hours</div><div class="metric-value" id="m-hours">—</div></div>
+      <div class="metric"><div class="metric-label">Roles</div><div class="metric-value" id="m-roles">—</div></div>
     </div>
 
     <div class="actions">
@@ -278,7 +260,6 @@
     </div>
   </main>
 
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <span class="sidebar-title">Saved estimates</span>
@@ -302,34 +283,40 @@
   let editingId = null;
   let cachedEstimates = [];
   let cachedSha = null;
-  let roles = []; // array of { id, title, hours, hrsWeek, rate, billing }
+  let roles = [];
 
-  /* ── Utilities ── */
   function currency(n) { if (!isFinite(n)) return '—'; return '$' + Math.round(n).toLocaleString('en-US'); }
   function pct(n) { if (!isFinite(n)) return '—'; return n.toFixed(1) + '%'; }
-  function fv(id) { return parseFloat(document.getElementById(id).value) || 0; }
   function uid() { return Math.random().toString(36).slice(2, 8); }
 
+  function getTotalMonths() { return parseFloat(document.getElementById('total-months').value) || 0; }
+
+  function calcHrsWeek(hours, months) {
+    // (total hours / total months) / 4
+    if (!hours || !months) return null;
+    return (hours / months) / 4;
+  }
+
   function deriveRole(r) {
-    const costs     = r.hours * r.rate;
-    const profit    = r.billing - costs;
-    const margin    = r.billing > 0 ? (profit / r.billing) * 100 : NaN;
-    const hrsMonth  = r.hrsWeek * (52 / 12);
-    return { costs, profit, margin, hrsMonth };
+    const costs = (r.hours || 0) * (r.rate || 0);
+    const hrsWeek = calcHrsWeek(r.hours, r.months);
+    const hrsMonth = hrsWeek ? hrsWeek * 4 : null;
+    return { costs, hrsWeek, hrsMonth };
   }
 
-  function deriveTotals(roles) {
-    const totalBilling = roles.reduce((s, r) => s + (r.billing || 0), 0);
-    const totalCosts   = roles.reduce((s, r) => s + (r.hours || 0) * (r.rate || 0), 0);
-    const totalHours   = roles.reduce((s, r) => s + (r.hours || 0), 0);
-    const netProfit    = totalBilling - totalCosts;
-    const margin       = totalBilling > 0 ? (netProfit / totalBilling) * 100 : NaN;
-    return { totalBilling, totalCosts, totalHours, netProfit, margin };
+  function deriveTotals(roles, billingAmount) {
+    const totalCosts   = (roles || []).reduce((s, r) => s + (r.hours || 0) * (r.rate || 0), 0);
+    const totalHours   = (roles || []).reduce((s, r) => s + (r.hours || 0), 0);
+    const billing      = billingAmount || 0;
+    const netProfit    = billing - totalCosts;
+    const margin       = billing > 0 ? (netProfit / billing) * 100 : NaN;
+    return { totalCosts, totalHours, billing, netProfit, margin };
   }
 
-  /* ── Roles UI ── */
+  /* ── Role UI ── */
   function addRole(data) {
-    const r = data || { id: uid(), title: '', hours: '', hrsWeek: '', rate: '', billing: '' };
+    const months = getTotalMonths();
+    const r = data || { id: uid(), title: '', hours: '', rate: '', months };
     if (!data) roles.push(r);
     renderRoles();
     calcTotals();
@@ -341,32 +328,32 @@
     calcTotals();
   }
 
-  function getRoleFromDOM(id) {
-    return {
-      id,
-      title:   document.getElementById(`r-title-${id}`).value,
-      hours:   parseFloat(document.getElementById(`r-hours-${id}`).value) || 0,
-      hrsWeek: parseFloat(document.getElementById(`r-hrsweek-${id}`).value) || 0,
-      rate:    parseFloat(document.getElementById(`r-rate-${id}`).value) || 0,
-      billing: parseFloat(document.getElementById(`r-billing-${id}`).value) || 0,
-    };
-  }
-
   function syncRolesFromDOM() {
-    roles = roles.map(r => getRoleFromDOM(r.id));
+    roles = roles.map(r => {
+      const hours = parseFloat(document.getElementById(`r-hours-${r.id}`).value) || 0;
+      const months = getTotalMonths();
+      return {
+        id: r.id,
+        title: document.getElementById(`r-title-${r.id}`).value,
+        hours,
+        rate:  parseFloat(document.getElementById(`r-rate-${r.id}`).value) || 0,
+        months,
+      };
+    });
   }
 
   function renderRoles() {
+    const months = getTotalMonths();
     const container = document.getElementById('roles-list');
     container.innerHTML = '';
     roles.forEach((r, idx) => {
-      const d = deriveRole(r);
+      const d = deriveRole({ ...r, months });
       const div = document.createElement('div');
       div.className = 'role-card';
       div.innerHTML = `
         <div class="role-card-header">
           <span class="role-card-title">Role ${idx + 1}</span>
-          <button class="role-remove-btn" onclick="removeRole('${r.id}')" title="Remove role">&#x2715;</button>
+          <button class="role-remove-btn" onclick="removeRole('${r.id}')">&#x2715;</button>
         </div>
         <div class="role-grid">
           <div class="field" style="grid-column:1/-1">
@@ -378,30 +365,18 @@
             <input type="number" id="r-hours-${r.id}" placeholder="0" min="0" value="${r.hours || ''}" oninput="syncAndCalc()" />
           </div>
           <div class="field">
-            <label>Hours per week</label>
-            <input type="number" id="r-hrsweek-${r.id}" placeholder="0" min="0" value="${r.hrsWeek || ''}" oninput="syncAndCalc()" />
-          </div>
-          <div class="field">
             <label>Hourly rate paid</label>
             <input type="number" id="r-rate-${r.id}" placeholder="0.00" min="0" step="0.01" value="${r.rate || ''}" oninput="syncAndCalc()" />
           </div>
-          <div class="field">
-            <label>Billing amount</label>
-            <input type="number" id="r-billing-${r.id}" placeholder="0.00" min="0" step="0.01" value="${r.billing || ''}" oninput="syncAndCalc()" />
-          </div>
         </div>
-        <div class="role-grid-3">
+        <div class="role-calcs">
+          <div class="role-calc">
+            <div class="role-calc-label">Hrs / week</div>
+            <div class="role-calc-value" id="r-hrsweek-${r.id}">${d.hrsWeek ? d.hrsWeek.toFixed(1) : '—'}</div>
+          </div>
           <div class="role-calc">
             <div class="role-calc-label">Verge costs</div>
             <div class="role-calc-value" id="r-costs-${r.id}">${r.hours && r.rate ? currency(d.costs) : '—'}</div>
-          </div>
-          <div class="role-calc">
-            <div class="role-calc-label">Net profit</div>
-            <div class="role-calc-value" id="r-profit-${r.id}" style="color:${isFinite(d.margin) ? (d.profit >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--text-muted)'}">${r.billing ? currency(d.profit) : '—'}</div>
-          </div>
-          <div class="role-calc">
-            <div class="role-calc-label">Margin</div>
-            <div class="role-calc-value" id="r-margin-${r.id}" style="color:${isFinite(d.margin) ? (d.margin >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--text-muted)'}">${isFinite(d.margin) ? pct(d.margin) : '—'}</div>
           </div>
         </div>
       `;
@@ -411,47 +386,50 @@
 
   function syncAndCalc() {
     syncRolesFromDOM();
-    // Update per-role calculated cells without full re-render
+    const months = getTotalMonths();
     roles.forEach(r => {
-      const d = deriveRole(r);
-      const costsEl  = document.getElementById(`r-costs-${r.id}`);
-      const profitEl = document.getElementById(`r-profit-${r.id}`);
-      const marginEl = document.getElementById(`r-margin-${r.id}`);
-      if (costsEl)  costsEl.textContent  = r.hours && r.rate ? currency(d.costs) : '—';
-      if (profitEl) { profitEl.textContent = r.billing ? currency(d.profit) : '—'; profitEl.style.color = isFinite(d.margin) ? (d.profit >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--text-muted)'; }
-      if (marginEl) { marginEl.textContent = isFinite(d.margin) ? pct(d.margin) : '—'; marginEl.style.color = isFinite(d.margin) ? (d.margin >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--text-muted)'; }
+      const d = deriveRole({ ...r, months });
+      const hw = document.getElementById(`r-hrsweek-${r.id}`);
+      const rc = document.getElementById(`r-costs-${r.id}`);
+      if (hw) hw.textContent = d.hrsWeek ? d.hrsWeek.toFixed(1) : '—';
+      if (rc) rc.textContent = r.hours && r.rate ? currency(d.costs) : '—';
     });
     calcTotals();
   }
 
   function calcTotals() {
-    const t = deriveTotals(roles);
-    document.getElementById('m-billing').textContent = t.totalBilling > 0 ? currency(t.totalBilling) : '—';
-    document.getElementById('m-costs').textContent   = t.totalCosts > 0 ? currency(t.totalCosts) : '—';
-    document.getElementById('m-hours').textContent   = t.totalHours > 0 ? t.totalHours : '—';
-    document.getElementById('m-roles').textContent   = roles.length || '—';
+    // Re-sync months into roles so hrs/week stays accurate when months changes
+    const months = getTotalMonths();
+    roles = roles.map(r => ({ ...r, months }));
+    // Also refresh hrs/week display for each role
+    roles.forEach(r => {
+      const d = deriveRole(r);
+      const hw = document.getElementById(`r-hrsweek-${r.id}`);
+      if (hw) hw.textContent = d.hrsWeek ? d.hrsWeek.toFixed(1) : '—';
+    });
+
+    const billing = parseFloat(document.getElementById('billing-amount').value) || 0;
+    const t = deriveTotals(roles, billing);
+
+    document.getElementById('out-total-costs').value = t.totalCosts > 0 ? currency(t.totalCosts) : '';
+    document.getElementById('m-billing').textContent  = billing > 0 ? currency(billing) : '—';
+    document.getElementById('m-costs').textContent    = t.totalCosts > 0 ? currency(t.totalCosts) : '—';
+    document.getElementById('m-hours').textContent    = t.totalHours > 0 ? t.totalHours : '—';
+    document.getElementById('m-roles').textContent    = roles.length || '—';
 
     const profEl = document.getElementById('m-profit');
-    profEl.textContent = t.totalBilling > 0 ? currency(t.netProfit) : '—';
-    profEl.className = 'metric-value' + (t.totalBilling > 0 ? (t.netProfit >= 0 ? ' pos' : ' neg') : '');
+    profEl.textContent = billing > 0 ? currency(t.netProfit) : '—';
+    profEl.className = 'metric-value' + (billing > 0 ? (t.netProfit >= 0 ? ' pos' : ' neg') : '');
 
     const margEl = document.getElementById('m-margin');
     margEl.textContent = isFinite(t.margin) ? pct(t.margin) : '—';
     margEl.className = 'metric-value' + (isFinite(t.margin) ? (t.margin >= 0 ? ' pos' : ' neg') : '');
   }
 
-  /* ── GitHub API ── */
-  function ghHeaders() {
-    return { Authorization: `Bearer ${config.token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' };
-  }
-  function fileUrl() {
-    return `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.path}`;
-  }
-  function setSyncStatus(state, text) {
-    const el = document.getElementById('sync-status');
-    el.className = 'sync-status ' + state;
-    document.getElementById('sync-text').textContent = text;
-  }
+  /* ── GitHub ── */
+  function ghHeaders() { return { Authorization: `Bearer ${config.token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' }; }
+  function fileUrl() { return `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.path}`; }
+  function setSyncStatus(state, text) { const el = document.getElementById('sync-status'); el.className = 'sync-status ' + state; document.getElementById('sync-text').textContent = text; }
 
   async function fetchEstimates() {
     if (!config) return;
@@ -470,22 +448,15 @@
   }
 
   async function pushEstimates(estimates) {
-    try {
-      const check = await fetch(fileUrl(), { headers: ghHeaders() });
-      if (check.ok) { const d = await check.json(); cachedSha = d.sha; }
-    } catch(e) {}
+    try { const check = await fetch(fileUrl(), { headers: ghHeaders() }); if (check.ok) { const d = await check.json(); cachedSha = d.sha; } } catch(e) {}
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(estimates, null, 2))));
-    const res = await fetch(fileUrl(), {
-      method: 'PUT', headers: ghHeaders(),
-      body: JSON.stringify({ message: `Update estimates (${new Date().toISOString().slice(0,10)})`, content, ...(cachedSha ? { sha: cachedSha } : {}) })
-    });
+    const res = await fetch(fileUrl(), { method: 'PUT', headers: ghHeaders(), body: JSON.stringify({ message: `Update estimates (${new Date().toISOString().slice(0,10)})`, content, ...(cachedSha ? { sha: cachedSha } : {}) }) });
     if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `GitHub ${res.status}`); }
     const data = await res.json();
     cachedSha = data.content.sha;
     cachedEstimates = estimates;
   }
 
-  /* ── Save ── */
   async function saveEstimate() {
     if (!config) { openSettings(); return; }
     const btn = document.getElementById('save-btn');
@@ -496,7 +467,8 @@
     const record = {
       id: editingId || Date.now().toString(),
       name: document.getElementById('eng-name').value.trim() || 'Unnamed engagement',
-      totalMonths: parseFloat(document.getElementById('total-months').value) || 0,
+      totalMonths: getTotalMonths(),
+      billingAmount: parseFloat(document.getElementById('billing-amount').value) || 0,
       notes: document.getElementById('notes').value.trim(),
       roles: roles.map(r => ({ ...r })),
       author: config.author,
@@ -516,13 +488,10 @@
       flash.textContent = 'Saved ✓'; flash.className = 'save-flash show';
       setTimeout(() => { flash.className = 'save-flash'; }, 2500);
       document.getElementById('editing-label').textContent = 'Fill in the fields below — totals update automatically';
-    } catch(e) {
-      flash.textContent = 'Save failed: ' + e.message; flash.className = 'save-flash err';
-    }
+    } catch(e) { flash.textContent = 'Save failed: ' + e.message; flash.className = 'save-flash err'; }
     btn.disabled = false; btn.textContent = 'Save estimate';
   }
 
-  /* ── Delete ── */
   async function deleteEstimate(e, id) {
     e.stopPropagation();
     if (!confirm('Delete this estimate for the whole team?')) return;
@@ -536,14 +505,14 @@
     } catch(err) { alert('Delete failed: ' + err.message); }
   }
 
-  /* ── Load into form ── */
   function loadEstimate(id) {
     const est = cachedEstimates.find(e => e.id === id);
     if (!est) return;
     editingId = id;
-    document.getElementById('eng-name').value     = est.name;
-    document.getElementById('total-months').value = est.totalMonths || '';
-    document.getElementById('notes').value        = est.notes || '';
+    document.getElementById('eng-name').value       = est.name;
+    document.getElementById('total-months').value   = est.totalMonths || '';
+    document.getElementById('billing-amount').value = est.billingAmount || '';
+    document.getElementById('notes').value          = est.notes || '';
     roles = (est.roles || []).map(r => ({ ...r }));
     renderRoles();
     calcTotals();
@@ -552,12 +521,13 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  /* ── Clear ── */
   function clearForm() {
     editingId = null;
-    document.getElementById('eng-name').value     = '';
-    document.getElementById('total-months').value = '';
-    document.getElementById('notes').value        = '';
+    document.getElementById('eng-name').value       = '';
+    document.getElementById('total-months').value   = '';
+    document.getElementById('billing-amount').value = '';
+    document.getElementById('notes').value          = '';
+    document.getElementById('out-total-costs').value = '';
     roles = [];
     renderRoles();
     calcTotals();
@@ -565,15 +535,14 @@
     renderSaved();
   }
 
-  /* ── Render sidebar ── */
   function renderSaved() {
     const all = cachedEstimates;
     document.getElementById('saved-count').textContent = all.length;
     const list = document.getElementById('saved-list');
-    if (all.length === 0) { list.innerHTML = '<div class="empty-state">No estimates yet.<br>Be the first to save one.</div>'; return; }
+    if (!all.length) { list.innerHTML = '<div class="empty-state">No estimates yet.<br>Be the first to save one.</div>'; return; }
     list.innerHTML = '';
     all.forEach(est => {
-      const t = deriveTotals(est.roles || []);
+      const t = deriveTotals(est.roles || [], est.billingAmount);
       const isEditing = editingId === est.id;
       const badgeClass = isFinite(t.margin) ? (t.margin >= 0 ? 'pos' : 'neg') : 'pos';
       const roleNames = (est.roles || []).map(r => r.title || 'Untitled').join(', ');
@@ -584,18 +553,18 @@
           <div class="sc-name">${est.name}</div>
           <button class="del-btn" title="Delete">&#x2715;</button>
         </div>
-        <div class="sc-roles">${(est.roles || []).length} role${(est.roles || []).length !== 1 ? 's' : ''} · ${est.totalMonths || 0}mo${roleNames ? ' · ' + roleNames : ''}</div>
+        <div class="sc-roles">${(est.roles||[]).length} role${(est.roles||[]).length!==1?'s':''} · ${est.totalMonths||0}mo${roleNames?' · '+roleNames:''}</div>
         <div class="sc-stats">
-          <span class="sc-stat">Billing: ${currency(t.totalBilling)}</span>
-          <span class="sc-badge ${badgeClass}">${isFinite(t.margin) ? pct(t.margin) : 'n/a'}</span>
+          <span class="sc-stat">Billing: ${currency(t.billing)}</span>
+          <span class="sc-badge ${badgeClass}">${isFinite(t.margin)?pct(t.margin):'n/a'} margin</span>
         </div>
         <div class="sc-stats" style="margin-top:4px">
           <span class="sc-stat">Net: ${currency(t.netProfit)}</span>
           <span class="sc-stat">Costs: ${currency(t.totalCosts)}</span>
         </div>
         <div class="sc-footer">
-          <span class="sc-author">${est.author || ''}</span>
-          <span class="sc-date">${est.savedAt || ''}</span>
+          <span class="sc-author">${est.author||''}</span>
+          <span class="sc-date">${est.savedAt||''}</span>
         </div>
       `;
       card.querySelector('.del-btn').addEventListener('click', (e) => deleteEstimate(e, est.id));
@@ -604,7 +573,6 @@
     });
   }
 
-  /* ── Setup ── */
   function openSettings() {
     const cfg = loadConfig() || {};
     document.getElementById('setup-token').value  = cfg.token  || '';
@@ -640,10 +608,9 @@
     await fetchEstimates();
   }
 
-  /* ── Init ── */
   if (config) { document.getElementById('setup-overlay').classList.add('hidden'); setSyncStatus('loading', 'syncing…'); fetchEstimates(); }
   else { openSettings(); }
-  addRole(); // Start with one role by default
+  addRole();
 </script>
 </body>
 </html>
