@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Engagement Estimator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0efe9;
+    --border: #e0dfd8;
+    --border-strong: #c8c7be;
+    --text: #1a1a18;
+    --text-muted: #7a7970;
+    --text-faint: #b0afa6;
+    --accent: #1a1a18;
+    --accent-fg: #f5f4f0;
+    --green: #1a6644;
+    --green-bg: #e6f2ec;
+    --red: #8c2a1c;
+    --red-bg: #f5e8e6;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.5; }
+
+  /* Header */
+  .header { background: var(--accent); color: var(--accent-fg); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+  .header-brand { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; }
+  .header-right { display: flex; align-items: center; gap: 14px; }
+  .sync-status { font-family: var(--mono); font-size: 11px; display: flex; align-items: center; gap: 6px; opacity: 0.5; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .sync-status.ok { color: #6fcfa0; opacity: 1; }
+  .sync-status.err { color: #f08080; opacity: 1; }
+  .sync-status.loading { color: #f5f4f0; opacity: 0.5; }
+  .header-settings-btn { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; color: rgba(255,255,255,0.7); font-family: var(--mono); font-size: 11px; padding: 4px 10px; cursor: pointer; letter-spacing: 0.04em; }
+  .header-settings-btn:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+  /* Setup overlay */
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,24,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .overlay.hidden { display: none; }
+  .setup-card { background: var(--surface); border-radius: 12px; padding: 2rem; width: 100%; max-width: 480px; }
+  .setup-title { font-size: 18px; font-weight: 500; margin-bottom: 0.25rem; }
+  .setup-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+  .setup-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+  .setup-field label { font-family: var(--mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
+  .setup-field input { height: 40px; border: 1px solid var(--border); border-radius: 6px; padding: 0 12px; font-family: var(--mono); font-size: 13px; color: var(--text); outline: none; width: 100%; }
+  .setup-field input:focus { border-color: var(--border-strong); }
+  .setup-field input::placeholder { color: var(--text-faint); }
+  .setup-hint { font-size: 12px; color: var(--text-faint); margin-top: 4px; line-height: 1.5; }
+  .setup-hint a { color: var(--text-muted); }
+  .setup-actions { display: flex; gap: 10px; margin-top: 1.5rem; align-items: center; }
+  .setup-error { font-family: var(--mono); font-size: 12px; color: var(--red); margin-top: 10px; display: none; }
+  .setup-error.show { display: block; }
+
+  /* Layout */
+  .layout { display: grid; grid-template-columns: 1fr 340px; gap: 0; min-height: calc(100vh - 56px); }
+  .main { padding: 2rem; border-right: 1px solid var(--border); }
+  .page-title { font-size: 22px; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+  .page-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 2rem; font-family: var(--mono); }
+
+  /* Form */
+  .form-section { margin-bottom: 2rem; }
+  .form-section-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .field-grid { display: grid; gap: 12px; }
+  .field-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .field-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 11px; font-family: var(--mono); color: var(--text-muted); letter-spacing: 0.04em; }
+  .field input { height: 38px; border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 0 10px; font-family: var(--mono); font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; width: 100%; }
+  .field input:focus { border-color: var(--border-strong); }
+  .field input::placeholder { color: var(--text-faint); }
+  .field input[readonly] { background: var(--surface2); color: var(--text-muted); cursor: default; }
+  .field textarea { border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 8px 10px; font-family: var(--sans); font-size: 14px; color: var(--text); outline: none; resize: vertical; width: 100%; min-height: 72px; }
+  .field textarea:focus { border-color: var(--border-strong); }
+  .field textarea::placeholder { color: var(--text-faint); }
+
+  /* Metrics */
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
+  .metric { background: var(--surface); padding: 1.25rem 1rem; }
+  .metric-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 6px; }
+  .metric-value { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--text); }
+  .metric-value.pos { color: var(--green); }
+  .metric-value.neg { color: var(--red); }
+
+  /* Buttons */
+  .btn { height: 38px; padding: 0 18px; border-radius: 6px; font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: opacity 0.15s, background 0.15s; }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); }
+  .btn-primary:hover { opacity: 0.82; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-ghost { background: transparent; border-color: var(--border-strong); color: var(--text-muted); }
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+  .actions { display: flex; gap: 10px; align-items: center; }
+  .save-flash { font-family: var(--mono); font-size: 12px; color: var(--green); opacity: 0; transition: opacity 0.2s; }
+  .save-flash.show { opacity: 1; }
+  .save-flash.err { color: var(--red); opacity: 1; }
+
+  /* Sidebar */
+  .sidebar { background: var(--surface); display: flex; flex-direction: column; }
+  .sidebar-header { padding: 1.25rem 1.5rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .sidebar-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .sidebar-meta { display: flex; align-items: center; gap: 8px; }
+  .sidebar-count { font-family: var(--mono); font-size: 11px; background: var(--surface2); color: var(--text-muted); border-radius: 99px; padding: 2px 8px; }
+  .sidebar-refresh { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 15px; padding: 2px 4px; line-height: 1; }
+  .sidebar-refresh:hover { color: var(--text-muted); }
+  .saved-list { flex: 1; overflow-y: auto; padding: 0.75rem; display: flex; flex-direction: column; gap: 6px; }
+  .saved-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+  .saved-card:hover { border-color: var(--border-strong); background: var(--bg); }
+  .saved-card.editing { border-color: var(--accent); background: var(--bg); }
+  .sc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; }
+  .sc-name { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; padding-right: 8px; }
+  .sc-role { font-family: var(--mono); font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+  .sc-stats { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .sc-stat { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+  .sc-badge { display: inline-block; font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
+  .sc-badge.pos { background: var(--green-bg); color: var(--green); }
+  .sc-badge.neg { background: var(--red-bg); color: var(--red); }
+  .sc-footer { display: flex; justify-content: space-between; margin-top: 6px; }
+  .sc-author { font-family: var(--mono); font-size: 10px; color: var(--text-faint); }
+  .sc-date { font-family: var(--mono); font-size: 10px; color: var(--text-faint); }
+  .sc-notes { font-size: 11px; color: var(--text-muted); margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .del-btn { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 14px; line-height: 1; padding: 2px; flex-shrink: 0; }
+  .del-btn:hover { color: var(--red); }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-faint); font-family: var(--mono); font-size: 12px; line-height: 1.8; }
+  .loading-state { text-align: center; padding: 2rem 1rem; color: var(--text-faint); font-family: var(--mono); font-size: 12px; }
+
+  /* Responsive */
+  @media (max-width: 800px) {
+    .layout { grid-template-columns: 1fr; }
+    .main { border-right: none; border-bottom: 1px solid var(--border); }
+    .sidebar { min-height: 300px; }
+    .field-grid.cols-3 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 520px) {
+    .field-grid.cols-2, .field-grid.cols-3 { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: 1fr; }
+    .header { padding: 0 1rem; }
+    .main { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Setup overlay -->
+<div class="overlay" id="setup-overlay">
+  <div class="setup-card">
+    <h2 class="setup-title">Connect to GitHub</h2>
+    <p class="setup-sub">
+      Estimates are stored as a JSON file in your GitHub repo — shared across your whole team.
+      You only need to do this once; your token is saved locally in your browser.
+    </p>
+
+    <div class="setup-field">
+      <label>GitHub Personal Access Token</label>
+      <input type="password" id="setup-token" placeholder="github_pat_…" autocomplete="off" />
+      <div class="setup-hint">
+        Generate one at <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a>.
+        Select the <strong>repo</strong> scope (classic token) or <strong>Contents: read &amp; write</strong> (fine-grained).
+      </div>
+    </div>
+
+    <div class="setup-field">
+      <label>Repo owner / org</label>
+      <input type="text" id="setup-owner" placeholder="your-org" />
+    </div>
+
+    <div class="setup-field">
+      <label>Repo name</label>
+      <input type="text" id="setup-repo" placeholder="internal-tools" />
+    </div>
+
+    <div class="setup-field">
+      <label>Path to data file in repo</label>
+      <input type="text" id="setup-path" placeholder="estimator/estimates.json" />
+      <div class="setup-hint">The file will be created automatically on first save if it doesn't exist yet.</div>
+    </div>
+
+    <div class="setup-field">
+      <label>Your name (shown on saved estimates)</label>
+      <input type="text" id="setup-author" placeholder="e.g. Jamie" />
+    </div>
+
+    <div class="setup-error" id="setup-error"></div>
+
+    <div class="setup-actions">
+      <button class="btn btn-primary" id="setup-save-btn" onclick="setupSave()">Save &amp; connect</button>
+      <button class="btn btn-ghost" id="setup-cancel-btn" onclick="setupCancel()" style="display:none">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <span class="header-brand">Engagement Estimator</span>
+  <div class="header-right">
+    <span class="sync-status loading" id="sync-status">
+      <span class="sync-dot"></span>
+      <span id="sync-text">not connected</span>
+    </span>
+    <button class="header-settings-btn" onclick="openSettings()">settings</button>
+  </div>
+</header>
+
+<!-- Main layout -->
+<div class="layout">
+  <main class="main">
+    <h1 class="page-title">New estimate</h1>
+    <p class="page-subtitle" id="editing-label">Fill in the fields below — calculations update automatically</p>
+
+    <div class="form-section">
+      <div class="form-section-label">Engagement details</div>
+      <div class="field-grid cols-2">
+        <div class="field">
+          <label>Engagement name</label>
+          <input type="text" id="eng-name" placeholder="e.g. Acme Corp — Phase 1" />
+        </div>
+        <div class="field">
+          <label>Role title</label>
+          <input type="text" id="role-title" placeholder="e.g. Senior Consultant" />
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="field">
+          <label>Notes (optional)</label>
+          <textarea id="notes" placeholder="Scope assumptions, caveats, context…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Time &amp; rate</div>
+      <div class="field-grid cols-3">
+        <div class="field">
+          <label>Total project hours</label>
+          <input type="number" id="total-hours" placeholder="0" min="0" oninput="calc()" />
+        </div>
+        <div class="field">
+          <label>Total months</label>
+          <input type="number" id="total-months" placeholder="0" min="0" oninput="calc()" />
+        </div>
+        <div class="field">
+          <label>Hours per week</label>
+          <input type="number" id="hrs-week" placeholder="0" min="0" oninput="calc()" />
+        </div>
+        <div class="field">
+          <label>Hourly rate paid (cost)</label>
+          <input type="number" id="hourly-rate" placeholder="0.00" min="0" step="0.01" oninput="calc()" />
+        </div>
+        <div class="field">
+          <label>Billing amount (total revenue)</label>
+          <input type="number" id="billing-amount" placeholder="0.00" min="0" step="0.01" oninput="calc()" />
+        </div>
+        <div class="field">
+          <label>Hours per month <span style="color:var(--text-faint)">(calc)</span></label>
+          <input type="number" id="hrs-month" readonly placeholder="—" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Calculated outputs</div>
+      <div class="field-grid cols-3">
+        <div class="field">
+          <label>Total Verge costs</label>
+          <input type="text" id="out-costs" readonly placeholder="—" />
+        </div>
+        <div class="field">
+          <label>Profit margin %</label>
+          <input type="text" id="out-margin" readonly placeholder="—" />
+        </div>
+        <div class="field">
+          <label>Net profit</label>
+          <input type="text" id="out-profit" readonly placeholder="—" />
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">Total Verge costs</div>
+        <div class="metric-value" id="m-costs">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Profit margin</div>
+        <div class="metric-value" id="m-margin">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Net profit</div>
+        <div class="metric-value" id="m-profit">—</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="save-btn" onclick="saveEstimate()">Save estimate</button>
+      <button class="btn btn-ghost" onclick="clearForm()">Clear</button>
+      <span class="save-flash" id="save-flash"></span>
+    </div>
+  </main>
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Saved estimates</span>
+      <div class="sidebar-meta">
+        <span class="sidebar-count" id="saved-count">—</span>
+        <button class="sidebar-refresh" onclick="fetchEstimates()" title="Refresh from GitHub">↻</button>
+      </div>
+    </div>
+    <div class="saved-list" id="saved-list">
+      <div class="loading-state">Connect to GitHub to load shared estimates.</div>
+    </div>
+  </aside>
+</div>
+
+<script>
+  const CFG_KEY = 'verge_gh_config_v1';
+
+  function loadConfig() {
+    try { return JSON.parse(localStorage.getItem(CFG_KEY) || 'null'); }
+    catch(e) { return null; }
+  }
+  function saveConfig(cfg) { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }
+
+  let config = loadConfig();
+  let editingId = null;
+  let cachedEstimates = [];
+  let cachedSha = null;
+
+  /* ── Setup ── */
+  function openSettings() {
+    const cfg = loadConfig() || {};
+    document.getElementById('setup-token').value  = cfg.token  || '';
+    document.getElementById('setup-owner').value  = cfg.owner  || '';
+    document.getElementById('setup-repo').value   = cfg.repo   || '';
+    document.getElementById('setup-path').value   = cfg.path   || 'estimator/estimates.json';
+    document.getElementById('setup-author').value = cfg.author || '';
+    document.getElementById('setup-cancel-btn').style.display = config ? '' : 'none';
+    document.getElementById('setup-error').classList.remove('show');
+    document.getElementById('setup-overlay').classList.remove('hidden');
+  }
+
+  function setupCancel() {
+    document.getElementById('setup-overlay').classList.add('hidden');
+  }
+
+  async function setupSave() {
+    const token  = document.getElementById('setup-token').value.trim();
+    const owner  = document.getElementById('setup-owner').value.trim();
+    const repo   = document.getElementById('setup-repo').value.trim();
+    const path   = document.getElementById('setup-path').value.trim() || 'estimator/estimates.json';
+    const author = document.getElementById('setup-author').value.trim() || 'Team member';
+    const errEl  = document.getElementById('setup-error');
+    const btn    = document.getElementById('setup-save-btn');
+
+    errEl.classList.remove('show');
+    if (!token || !owner || !repo) {
+      errEl.textContent = 'Token, owner, and repo name are all required.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    btn.textContent = 'Verifying…';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
+        headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' }
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.message || `GitHub returned ${res.status}`);
+      }
+    } catch(e) {
+      errEl.textContent = 'Could not connect: ' + e.message;
+      errEl.classList.add('show');
+      btn.textContent = 'Save & connect';
+      btn.disabled = false;
+      return;
+    }
+
+    config = { token, owner, repo, path, author };
+    saveConfig(config);
+    document.getElementById('setup-overlay').classList.add('hidden');
+    btn.textContent = 'Save & connect';
+    btn.disabled = false;
+    setSyncStatus('loading', 'syncing…');
+    await fetchEstimates();
+  }
+
+  /* ── GitHub helpers ── */
+  function ghHeaders() {
+    return {
+      Authorization: `Bearer ${config.token}`,
+      Accept: 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+    };
+  }
+  function fileUrl() {
+    return `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.path}`;
+  }
+
+  async function fetchEstimates() {
+    if (!config) return;
+    setSyncStatus('loading', 'syncing…');
+    try {
+      const res = await fetch(fileUrl(), { headers: ghHeaders() });
+      if (res.status === 404) {
+        cachedEstimates = [];
+        cachedSha = null;
+        renderSaved();
+        setSyncStatus('ok', 'connected · 0 estimates');
+        return;
+      }
+      if (!res.ok) throw new Error(`GitHub ${res.status}`);
+      const data = await res.json();
+      cachedSha = data.sha;
+      const decoded = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+      cachedEstimates = JSON.parse(decoded);
+      renderSaved();
+      const n = cachedEstimates.length;
+      setSyncStatus('ok', `connected · ${n} estimate${n !== 1 ? 's' : ''}`);
+    } catch(e) {
+      setSyncStatus('err', 'sync error — check settings');
+      console.error('fetchEstimates:', e);
+    }
+  }
+
+  async function pushEstimates(estimates) {
+    // Always re-fetch SHA first to avoid conflicts
+    try {
+      const check = await fetch(fileUrl(), { headers: ghHeaders() });
+      if (check.ok) {
+        const d = await check.json();
+        cachedSha = d.sha;
+      } else if (check.status !== 404) {
+        throw new Error(`GitHub ${check.status} on pre-check`);
+      }
+    } catch(e) {
+      if (!e.message.includes('404')) throw e;
+    }
+
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(estimates, null, 2))));
+    const body = {
+      message: `Update estimates (${new Date().toISOString().slice(0,10)})`,
+      content,
+      ...(cachedSha ? { sha: cachedSha } : {}),
+    };
+    const res = await fetch(fileUrl(), {
+      method: 'PUT',
+      headers: ghHeaders(),
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `GitHub ${res.status}`);
+    }
+    const data = await res.json();
+    cachedSha = data.content.sha;
+    cachedEstimates = estimates;
+  }
+
+  /* ── Calculations ── */
+  function currency(n) {
+    if (!isFinite(n)) return '—';
+    return '$' + Math.round(n).toLocaleString('en-US');
+  }
+  function pct(n) {
+    if (!isFinite(n)) return '—';
+    return n.toFixed(1) + '%';
+  }
+  function getVal(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+  function derive(d) {
+    const hrsMonth   = d.hrsWeek * (52 / 12);
+    const totalCosts = d.totalHours * d.hourlyRate;
+    const netProfit  = d.billingAmount - totalCosts;
+    const marginPct  = d.billingAmount > 0 ? (netProfit / d.billingAmount) * 100 : NaN;
+    return { hrsMonth, totalCosts, netProfit, marginPct };
+  }
+
+  function calc() {
+    const d = {
+      hrsWeek: getVal('hrs-week'),
+      totalHours: getVal('total-hours'),
+      hourlyRate: getVal('hourly-rate'),
+      billingAmount: getVal('billing-amount'),
+    };
+    const { hrsMonth, totalCosts, netProfit, marginPct } = derive(d);
+
+    document.getElementById('hrs-month').value  = hrsMonth > 0 ? hrsMonth.toFixed(1) : '';
+    document.getElementById('out-costs').value  = totalCosts > 0 ? currency(totalCosts) : '';
+    document.getElementById('out-margin').value = d.billingAmount > 0 ? pct(marginPct) : '';
+    document.getElementById('out-profit').value = d.billingAmount > 0 ? currency(netProfit) : '';
+
+    document.getElementById('m-costs').textContent = totalCosts > 0 ? currency(totalCosts) : '—';
+
+    const mm = document.getElementById('m-margin');
+    mm.textContent = d.billingAmount > 0 ? pct(marginPct) : '—';
+    mm.className = 'metric-value' + (d.billingAmount > 0 ? (marginPct >= 0 ? ' pos' : ' neg') : '');
+
+    const mp = document.getElementById('m-profit');
+    mp.textContent = d.billingAmount > 0 ? currency(netProfit) : '—';
+    mp.className = 'metric-value' + (d.billingAmount > 0 ? (netProfit >= 0 ? ' pos' : ' neg') : '');
+  }
+
+  /* ── Save ── */
+  async function saveEstimate() {
+    if (!config) { openSettings(); return; }
+    const btn   = document.getElementById('save-btn');
+    const flash = document.getElementById('save-flash');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    flash.className = 'save-flash';
+
+    const record = {
+      id: editingId || Date.now().toString(),
+      name: document.getElementById('eng-name').value.trim() || 'Unnamed engagement',
+      role: document.getElementById('role-title').value.trim(),
+      notes: document.getElementById('notes').value.trim(),
+      totalHours: getVal('total-hours'),
+      totalMonths: getVal('total-months'),
+      hrsWeek: getVal('hrs-week'),
+      hourlyRate: getVal('hourly-rate'),
+      billingAmount: getVal('billing-amount'),
+      author: config.author,
+      savedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    };
+
+    // Merge with fresh remote copy
+    let base = [...cachedEstimates];
+    const idx = base.findIndex(e => e.id === record.id);
+    if (idx >= 0) base[idx] = record; else base.unshift(record);
+
+    try {
+      await pushEstimates(base);
+      editingId = null;
+      renderSaved();
+      const n = base.length;
+      setSyncStatus('ok', `connected · ${n} estimate${n !== 1 ? 's' : ''}`);
+      flash.textContent = 'Saved ✓';
+      flash.className = 'save-flash show';
+      setTimeout(() => { flash.className = 'save-flash'; }, 2500);
+      document.getElementById('editing-label').textContent = 'Fill in the fields below — calculations update automatically';
+    } catch(e) {
+      flash.textContent = 'Save failed: ' + e.message;
+      flash.className = 'save-flash err';
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Save estimate';
+  }
+
+  /* ── Delete ── */
+  async function deleteEstimate(e, id) {
+    e.stopPropagation();
+    if (!confirm('Delete this estimate for the whole team?')) return;
+    try {
+      const filtered = cachedEstimates.filter(x => x.id !== id);
+      await pushEstimates(filtered);
+      if (editingId === id) clearForm();
+      renderSaved();
+      const n = filtered.length;
+      setSyncStatus('ok', `connected · ${n} estimate${n !== 1 ? 's' : ''}`);
+    } catch(err) {
+      alert('Delete failed: ' + err.message);
+    }
+  }
+
+  /* ── Load into form ── */
+  function loadEstimate(id) {
+    const est = cachedEstimates.find(e => e.id === id);
+    if (!est) return;
+    editingId = id;
+    document.getElementById('eng-name').value       = est.name;
+    document.getElementById('role-title').value     = est.role || '';
+    document.getElementById('notes').value          = est.notes || '';
+    document.getElementById('total-hours').value    = est.totalHours || '';
+    document.getElementById('total-months').value   = est.totalMonths || '';
+    document.getElementById('hrs-week').value       = est.hrsWeek || '';
+    document.getElementById('hourly-rate').value    = est.hourlyRate || '';
+    document.getElementById('billing-amount').value = est.billingAmount || '';
+    calc();
+    document.getElementById('editing-label').textContent = 'Editing: ' + est.name;
+    renderSaved();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── Clear ── */
+  function clearForm() {
+    editingId = null;
+    ['eng-name','role-title','notes'].forEach(id => document.getElementById(id).value = '');
+    ['total-hours','total-months','hrs-week','hourly-rate','billing-amount'].forEach(id => document.getElementById(id).value = '');
+    ['hrs-month','out-costs','out-margin','out-profit'].forEach(id => document.getElementById(id).value = '');
+    ['m-costs','m-margin','m-profit'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+      document.getElementById(id).className = 'metric-value';
+    });
+    document.getElementById('editing-label').textContent = 'Fill in the fields below — calculations update automatically';
+    renderSaved();
+  }
+
+  /* ── Render sidebar ── */
+  function renderSaved() {
+    const all = cachedEstimates;
+    document.getElementById('saved-count').textContent = all.length;
+    const list = document.getElementById('saved-list');
+
+    if (all.length === 0) {
+      list.innerHTML = '<div class="empty-state">No estimates yet.<br>Be the first to save one.</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    all.forEach(est => {
+      const { totalCosts, netProfit, marginPct } = derive(est);
+      const isEditing = editingId === est.id;
+      const badgeClass = isFinite(marginPct) ? (marginPct >= 0 ? 'pos' : 'neg') : 'pos';
+      const card = document.createElement('div');
+      card.className = 'saved-card' + (isEditing ? ' editing' : '');
+      card.innerHTML = `
+        <div class="sc-top">
+          <div class="sc-name">${est.name}</div>
+          <button class="del-btn" title="Delete for everyone">&#x2715;</button>
+        </div>
+        <div class="sc-role">${est.role || 'No role specified'}</div>
+        <div class="sc-stats">
+          <span class="sc-stat">${est.totalHours}h &bull; ${est.totalMonths}mo</span>
+          <span class="sc-badge ${badgeClass}">${isFinite(marginPct) ? pct(marginPct) : 'n/a'} margin</span>
+        </div>
+        <div class="sc-stats" style="margin-top:5px;">
+          <span class="sc-stat">Costs: ${currency(totalCosts)}</span>
+          <span class="sc-stat">Billing: ${currency(est.billingAmount)}</span>
+          <span class="sc-stat">Net: ${currency(netProfit)}</span>
+        </div>
+        ${est.notes ? `<div class="sc-notes">${est.notes}</div>` : ''}
+        <div class="sc-footer">
+          <span class="sc-author">${est.author || ''}</span>
+          <span class="sc-date">${est.savedAt}</span>
+        </div>
+      `;
+      card.querySelector('.del-btn').addEventListener('click', (e) => deleteEstimate(e, est.id));
+      card.addEventListener('click', (e) => { if (e.target.classList.contains('del-btn')) return; loadEstimate(est.id); });
+      list.appendChild(card);
+    });
+  }
+
+  /* ── Sync indicator ── */
+  function setSyncStatus(state, text) {
+    const el = document.getElementById('sync-status');
+    el.className = 'sync-status ' + state;
+    document.getElementById('sync-text').textContent = text;
+  }
+
+  /* ── Init ── */
+  if (config) {
+    document.getElementById('setup-overlay').classList.add('hidden');
+    setSyncStatus('loading', 'syncing…');
+    fetchEstimates();
+  } else {
+    openSettings();
+  }
+</script>
+</body>
+</html>

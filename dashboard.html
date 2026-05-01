@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Estimates Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0efe9;
+    --border: #e0dfd8;
+    --border-strong: #c8c7be;
+    --text: #1a1a18;
+    --text-muted: #7a7970;
+    --text-faint: #b0afa6;
+    --accent: #1a1a18;
+    --accent-fg: #f5f4f0;
+    --green: #1a6644;
+    --green-bg: #e6f2ec;
+    --green-border: #b6dfc9;
+    --red: #8c2a1c;
+    --red-bg: #f5e8e6;
+    --red-border: #e8c0b8;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.5; }
+
+  /* Header */
+  .header { background: var(--accent); color: var(--accent-fg); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+  .header-brand { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; }
+  .header-right { display: flex; align-items: center; gap: 14px; }
+  .sync-status { font-family: var(--mono); font-size: 11px; display: flex; align-items: center; gap: 6px; opacity: 0.5; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .sync-status.ok { color: #6fcfa0; opacity: 1; }
+  .sync-status.err { color: #f08080; opacity: 1; }
+  .sync-status.loading { color: #f5f4f0; opacity: 0.5; }
+  .header-btn { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; color: rgba(255,255,255,0.7); font-family: var(--mono); font-size: 11px; padding: 4px 10px; cursor: pointer; letter-spacing: 0.04em; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+  .header-btn:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+  /* Setup overlay */
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,24,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .overlay.hidden { display: none; }
+  .setup-card { background: var(--surface); border-radius: 12px; padding: 2rem; width: 100%; max-width: 480px; }
+  .setup-title { font-size: 18px; font-weight: 500; margin-bottom: 0.25rem; }
+  .setup-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+  .setup-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+  .setup-field label { font-family: var(--mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
+  .setup-field input { height: 40px; border: 1px solid var(--border); border-radius: 6px; padding: 0 12px; font-family: var(--mono); font-size: 13px; color: var(--text); outline: none; width: 100%; }
+  .setup-field input:focus { border-color: var(--border-strong); }
+  .setup-field input::placeholder { color: var(--text-faint); }
+  .setup-hint { font-size: 12px; color: var(--text-faint); margin-top: 4px; line-height: 1.5; }
+  .setup-hint a { color: var(--text-muted); }
+  .setup-actions { display: flex; gap: 10px; margin-top: 1.5rem; }
+  .setup-error { font-family: var(--mono); font-size: 12px; color: var(--red); margin-top: 10px; display: none; }
+  .setup-error.show { display: block; }
+
+  /* Page body */
+  .page { max-width: 900px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+  /* Top bar */
+  .topbar { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap; }
+  .topbar-left {}
+  .page-title { font-size: 26px; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
+  .page-meta { font-family: var(--mono); font-size: 12px; color: var(--text-faint); }
+
+  /* Summary strip */
+  .summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 2.5rem; }
+  .summary-cell { background: var(--surface); padding: 1rem 1.25rem; }
+  .summary-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 5px; }
+  .summary-value { font-family: var(--mono); font-size: 20px; font-weight: 500; color: var(--text); }
+  .summary-value.pos { color: var(--green); }
+  .summary-value.neg { color: var(--red); }
+
+  /* Controls */
+  .controls { display: flex; gap: 10px; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .search-wrap { position: relative; flex: 1; min-width: 180px; }
+  .search-wrap input { width: 100%; height: 36px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px 0 32px; font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--surface); outline: none; }
+  .search-wrap input:focus { border-color: var(--border-strong); }
+  .search-wrap input::placeholder { color: var(--text-faint); }
+  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-size: 13px; pointer-events: none; }
+  .sort-select { height: 36px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; font-family: var(--mono); font-size: 12px; color: var(--text-muted); background: var(--surface); outline: none; cursor: pointer; }
+  .sort-select:focus { border-color: var(--border-strong); }
+  .count-label { font-family: var(--mono); font-size: 12px; color: var(--text-faint); white-space: nowrap; }
+
+  /* Engagement list */
+  .eng-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .eng-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.15s; }
+  .eng-card:hover { border-color: var(--border-strong); }
+  .eng-card.open { border-color: var(--border-strong); }
+
+  .eng-header { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; user-select: none; }
+  .eng-chevron { font-size: 11px; color: var(--text-faint); transition: transform 0.2s; flex-shrink: 0; width: 14px; }
+  .eng-card.open .eng-chevron { transform: rotate(90deg); }
+  .eng-title-block { flex: 1; min-width: 0; }
+  .eng-title { font-size: 15px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .eng-subtitle { font-family: var(--mono); font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .eng-badges { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .badge { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 3px 9px; border-radius: 99px; font-weight: 500; white-space: nowrap; }
+  .badge-pos { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .badge-neg { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .badge-neutral { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+  .eng-profit { font-family: var(--mono); font-size: 14px; font-weight: 500; flex-shrink: 0; }
+  .eng-profit.pos { color: var(--green); }
+  .eng-profit.neg { color: var(--red); }
+
+  /* Expanded detail */
+  .eng-detail { display: none; border-top: 1px solid var(--border); padding: 20px; background: var(--bg); }
+  .eng-card.open .eng-detail { display: block; }
+
+  .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+  .detail-cell { background: var(--surface); padding: 12px 14px; }
+  .detail-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 4px; }
+  .detail-value { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--text); }
+  .detail-value.pos { color: var(--green); }
+  .detail-value.neg { color: var(--red); }
+
+  .detail-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+
+  .detail-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .detail-footer-meta { font-family: var(--mono); font-size: 11px; color: var(--text-faint); }
+  .detail-notes { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .detail-notes-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 6px; }
+
+  /* Empty / loading */
+  .state-msg { text-align: center; padding: 5rem 1rem; font-family: var(--mono); font-size: 13px; color: var(--text-faint); line-height: 2; }
+
+  /* Buttons */
+  .btn { height: 36px; padding: 0 16px; border-radius: 6px; font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: opacity 0.15s, background 0.15s; }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); }
+  .btn-primary:hover { opacity: 0.82; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-ghost { background: transparent; border-color: var(--border-strong); color: var(--text-muted); font-family: var(--mono); font-size: 12px; }
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .summary-strip { grid-template-columns: 1fr 1fr; }
+    .detail-grid, .detail-row { grid-template-columns: 1fr 1fr; }
+    .eng-badges { display: none; }
+    .page { padding: 1.5rem 1rem; }
+  }
+  @media (max-width: 480px) {
+    .summary-strip { grid-template-columns: 1fr; }
+    .detail-grid, .detail-row { grid-template-columns: 1fr; }
+    .header { padding: 0 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Setup overlay -->
+<div class="overlay" id="setup-overlay">
+  <div class="setup-card">
+    <h2 class="setup-title">Connect to GitHub</h2>
+    <p class="setup-sub">
+      This dashboard reads from the same <code style="font-family:var(--mono);font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;">estimates.json</code> file as the estimator tool.
+      Enter the same repo details and your token — saved locally in your browser, never shared.
+    </p>
+    <div class="setup-field">
+      <label>GitHub Personal Access Token</label>
+      <input type="password" id="setup-token" placeholder="github_pat_…" autocomplete="off" />
+      <div class="setup-hint">Needs <strong>repo</strong> scope (classic) or <strong>Contents: read</strong> (fine-grained).</div>
+    </div>
+    <div class="setup-field">
+      <label>Repo owner / org</label>
+      <input type="text" id="setup-owner" placeholder="your-org" />
+    </div>
+    <div class="setup-field">
+      <label>Repo name</label>
+      <input type="text" id="setup-repo" placeholder="internal-tools" />
+    </div>
+    <div class="setup-field">
+      <label>Path to estimates.json in repo</label>
+      <input type="text" id="setup-path" placeholder="estimator/estimates.json" />
+    </div>
+    <div class="setup-error" id="setup-error"></div>
+    <div class="setup-actions">
+      <button class="btn btn-primary" id="setup-save-btn" onclick="setupSave()">Connect</button>
+      <button class="btn btn-ghost" id="setup-cancel-btn" onclick="setupCancel()" style="display:none">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <span class="header-brand">Estimates Dashboard</span>
+  <div class="header-right">
+    <span class="sync-status loading" id="sync-status">
+      <span class="sync-dot"></span>
+      <span id="sync-text">not connected</span>
+    </span>
+    <a href="index.html" class="header-btn">&#8592; Estimator</a>
+    <button class="header-btn" onclick="openSettings()">settings</button>
+  </div>
+</header>
+
+<!-- Page -->
+<div class="page">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">All engagements</h1>
+      <p class="page-meta" id="page-meta">—</p>
+    </div>
+    <button class="btn btn-ghost" onclick="fetchEstimates()" id="refresh-btn">↻ Refresh</button>
+  </div>
+
+  <!-- Summary strip -->
+  <div class="summary-strip" id="summary-strip" style="display:none">
+    <div class="summary-cell">
+      <div class="summary-label">Engagements</div>
+      <div class="summary-value" id="sum-count">—</div>
+    </div>
+    <div class="summary-cell">
+      <div class="summary-label">Total billing</div>
+      <div class="summary-value" id="sum-billing">—</div>
+    </div>
+    <div class="summary-cell">
+      <div class="summary-label">Total costs</div>
+      <div class="summary-value" id="sum-costs">—</div>
+    </div>
+    <div class="summary-cell">
+      <div class="summary-label">Total net profit</div>
+      <div class="summary-value" id="sum-profit">—</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls" id="controls" style="display:none">
+    <div class="search-wrap">
+      <span class="search-icon">&#9906;</span>
+      <input type="text" id="search-input" placeholder="Search engagements…" oninput="renderList()" />
+    </div>
+    <select class="sort-select" id="sort-select" onchange="renderList()">
+      <option value="newest">Newest first</option>
+      <option value="oldest">Oldest first</option>
+      <option value="margin-desc">Highest margin</option>
+      <option value="margin-asc">Lowest margin</option>
+      <option value="profit-desc">Highest profit</option>
+      <option value="profit-asc">Lowest profit</option>
+      <option value="name-asc">Name A–Z</option>
+    </select>
+    <span class="count-label" id="count-label"></span>
+  </div>
+
+  <!-- List -->
+  <div class="eng-list" id="eng-list">
+    <div class="state-msg">Connect to GitHub to load estimates.</div>
+  </div>
+</div>
+
+<script>
+  const CFG_KEY = 'verge_gh_config_v1';
+
+  function loadConfig() {
+    try { return JSON.parse(localStorage.getItem(CFG_KEY) || 'null'); }
+    catch(e) { return null; }
+  }
+  function saveConfig(cfg) { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }
+
+  let config = loadConfig();
+  let allEstimates = [];
+
+  /* ── Helpers ── */
+  function currency(n) {
+    if (!isFinite(n)) return '—';
+    return '$' + Math.round(n).toLocaleString('en-US');
+  }
+  function pct(n) {
+    if (!isFinite(n)) return '—';
+    return n.toFixed(1) + '%';
+  }
+  function derive(d) {
+    const hrsMonth   = d.hrsWeek * (52 / 12);
+    const totalCosts = d.totalHours * d.hourlyRate;
+    const netProfit  = d.billingAmount - totalCosts;
+    const marginPct  = d.billingAmount > 0 ? (netProfit / d.billingAmount) * 100 : NaN;
+    return { hrsMonth, totalCosts, netProfit, marginPct };
+  }
+  function setSyncStatus(state, text) {
+    const el = document.getElementById('sync-status');
+    el.className = 'sync-status ' + state;
+    document.getElementById('sync-text').textContent = text;
+  }
+
+  /* ── Setup ── */
+  function openSettings() {
+    const cfg = loadConfig() || {};
+    document.getElementById('setup-token').value = cfg.token || '';
+    document.getElementById('setup-owner').value = cfg.owner || '';
+    document.getElementById('setup-repo').value  = cfg.repo  || '';
+    document.getElementById('setup-path').value  = cfg.path  || 'estimator/estimates.json';
+    document.getElementById('setup-cancel-btn').style.display = config ? '' : 'none';
+    document.getElementById('setup-error').classList.remove('show');
+    document.getElementById('setup-overlay').classList.remove('hidden');
+  }
+  function setupCancel() {
+    document.getElementById('setup-overlay').classList.add('hidden');
+  }
+  async function setupSave() {
+    const token = document.getElementById('setup-token').value.trim();
+    const owner = document.getElementById('setup-owner').value.trim();
+    const repo  = document.getElementById('setup-repo').value.trim();
+    const path  = document.getElementById('setup-path').value.trim() || 'estimator/estimates.json';
+    const errEl = document.getElementById('setup-error');
+    const btn   = document.getElementById('setup-save-btn');
+
+    errEl.classList.remove('show');
+    if (!token || !owner || !repo) {
+      errEl.textContent = 'Token, owner, and repo name are all required.';
+      errEl.classList.add('show');
+      return;
+    }
+    btn.textContent = 'Verifying…';
+    btn.disabled = true;
+    try {
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
+        headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' }
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.message || `GitHub returned ${res.status}`);
+      }
+    } catch(e) {
+      errEl.textContent = 'Could not connect: ' + e.message;
+      errEl.classList.add('show');
+      btn.textContent = 'Connect';
+      btn.disabled = false;
+      return;
+    }
+    // Reuse author from estimator config if present, otherwise blank
+    const existing = loadConfig() || {};
+    config = { token, owner, repo, path, author: existing.author || '' };
+    saveConfig(config);
+    document.getElementById('setup-overlay').classList.add('hidden');
+    btn.textContent = 'Connect';
+    btn.disabled = false;
+    setSyncStatus('loading', 'loading…');
+    await fetchEstimates();
+  }
+
+  /* ── Fetch ── */
+  async function fetchEstimates() {
+    if (!config) return;
+    setSyncStatus('loading', 'loading…');
+    document.getElementById('refresh-btn').disabled = true;
+    try {
+      const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.path}`;
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${config.token}`, Accept: 'application/vnd.github+json' }
+      });
+      if (res.status === 404) {
+        allEstimates = [];
+        renderAll();
+        setSyncStatus('ok', 'connected · no estimates yet');
+        return;
+      }
+      if (!res.ok) throw new Error(`GitHub ${res.status}`);
+      const data = await res.json();
+      const decoded = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+      allEstimates = JSON.parse(decoded);
+      renderAll();
+      const n = allEstimates.length;
+      setSyncStatus('ok', `connected · ${n} engagement${n !== 1 ? 's' : ''}`);
+    } catch(e) {
+      setSyncStatus('err', 'load error — check settings');
+      document.getElementById('eng-list').innerHTML = `<div class="state-msg">Could not load estimates.<br>${e.message}</div>`;
+      console.error(e);
+    }
+    document.getElementById('refresh-btn').disabled = false;
+  }
+
+  /* ── Summary strip ── */
+  function renderSummary(estimates) {
+    if (estimates.length === 0) {
+      document.getElementById('summary-strip').style.display = 'none';
+      return;
+    }
+    document.getElementById('summary-strip').style.display = '';
+    let totalBilling = 0, totalCosts = 0, totalProfit = 0;
+    estimates.forEach(e => {
+      const d = derive(e);
+      totalBilling += e.billingAmount || 0;
+      totalCosts   += d.totalCosts;
+      totalProfit  += d.netProfit;
+    });
+    document.getElementById('sum-count').textContent   = estimates.length;
+    document.getElementById('sum-billing').textContent = currency(totalBilling);
+    document.getElementById('sum-costs').textContent   = currency(totalCosts);
+    const profEl = document.getElementById('sum-profit');
+    profEl.textContent = currency(totalProfit);
+    profEl.className = 'summary-value ' + (totalProfit >= 0 ? 'pos' : 'neg');
+  }
+
+  /* ── Filter + sort ── */
+  function getFiltered() {
+    const q     = (document.getElementById('search-input').value || '').toLowerCase();
+    const sort  = document.getElementById('sort-select').value;
+    let list = allEstimates.filter(e => {
+      if (!q) return true;
+      return (e.name || '').toLowerCase().includes(q) ||
+             (e.role || '').toLowerCase().includes(q) ||
+             (e.author || '').toLowerCase().includes(q) ||
+             (e.notes || '').toLowerCase().includes(q);
+    });
+    list = list.slice().sort((a, b) => {
+      const da = derive(a), db = derive(b);
+      if (sort === 'newest')       return b.id - a.id;
+      if (sort === 'oldest')       return a.id - b.id;
+      if (sort === 'margin-desc')  return (isFinite(db.marginPct) ? db.marginPct : -Infinity) - (isFinite(da.marginPct) ? da.marginPct : -Infinity);
+      if (sort === 'margin-asc')   return (isFinite(da.marginPct) ? da.marginPct : Infinity) - (isFinite(db.marginPct) ? db.marginPct : Infinity);
+      if (sort === 'profit-desc')  return db.netProfit - da.netProfit;
+      if (sort === 'profit-asc')   return da.netProfit - db.netProfit;
+      if (sort === 'name-asc')     return (a.name || '').localeCompare(b.name || '');
+      return 0;
+    });
+    return list;
+  }
+
+  /* ── Render full page ── */
+  function renderAll() {
+    renderSummary(allEstimates);
+    document.getElementById('controls').style.display = allEstimates.length > 0 ? '' : 'none';
+    renderList();
+    const last = allEstimates.length > 0
+      ? 'Last updated ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+      : 'No estimates on file yet';
+    document.getElementById('page-meta').textContent = last;
+  }
+
+  /* ── Render list ── */
+  function renderList() {
+    const list = getFiltered();
+    const container = document.getElementById('eng-list');
+    document.getElementById('count-label').textContent =
+      list.length === allEstimates.length
+        ? `${list.length} engagement${list.length !== 1 ? 's' : ''}`
+        : `${list.length} of ${allEstimates.length}`;
+
+    if (list.length === 0) {
+      container.innerHTML = allEstimates.length === 0
+        ? '<div class="state-msg">No estimates saved yet.<br>Head to the estimator to create the first one.</div>'
+        : '<div class="state-msg">No engagements match your search.</div>';
+      return;
+    }
+
+    // Preserve open state
+    const openIds = new Set(
+      [...container.querySelectorAll('.eng-card.open')].map(el => el.dataset.id)
+    );
+
+    container.innerHTML = '';
+    list.forEach(est => {
+      const d = derive(est);
+      const isOpen = openIds.has(est.id);
+      const badgeClass = isFinite(d.marginPct) ? (d.marginPct >= 0 ? 'badge-pos' : 'badge-neg') : 'badge-neutral';
+      const profitClass = d.netProfit >= 0 ? 'pos' : 'neg';
+
+      const card = document.createElement('div');
+      card.className = 'eng-card' + (isOpen ? ' open' : '');
+      card.dataset.id = est.id;
+
+      card.innerHTML = `
+        <div class="eng-header">
+          <span class="eng-chevron">&#9658;</span>
+          <div class="eng-title-block">
+            <div class="eng-title">${est.name}</div>
+            <div class="eng-subtitle">${est.role || 'No role'} &bull; ${est.totalHours || 0}h &bull; ${est.totalMonths || 0}mo</div>
+          </div>
+          <div class="eng-badges">
+            <span class="badge ${badgeClass}">${isFinite(d.marginPct) ? pct(d.marginPct) : 'n/a'} margin</span>
+          </div>
+          <div class="eng-profit ${profitClass}">${currency(d.netProfit)}</div>
+        </div>
+        <div class="eng-detail">
+          <div class="detail-grid">
+            <div class="detail-cell">
+              <div class="detail-label">Billing amount</div>
+              <div class="detail-value">${currency(est.billingAmount)}</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-label">Total Verge costs</div>
+              <div class="detail-value">${currency(d.totalCosts)}</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-label">Net profit</div>
+              <div class="detail-value ${profitClass}">${currency(d.netProfit)}</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-label">Profit margin</div>
+              <div class="detail-value ${isFinite(d.marginPct) ? profitClass : ''}">${isFinite(d.marginPct) ? pct(d.marginPct) : '—'}</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-label">Hourly rate paid</div>
+              <div class="detail-value">${currency(est.hourlyRate)}/hr</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-label">Hours per month</div>
+              <div class="detail-value">${isFinite(d.hrsMonth) && d.hrsMonth > 0 ? d.hrsMonth.toFixed(1) : '—'}</div>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-cell">
+              <div class="detail-label">Total hours</div>
+              <div class="detail-value">${est.totalHours || '—'}</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-label">Total months</div>
+              <div class="detail-value">${est.totalMonths || '—'}</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-label">Hours per week</div>
+              <div class="detail-value">${est.hrsWeek || '—'}</div>
+            </div>
+          </div>
+          ${est.notes ? `
+          <div class="detail-notes">
+            <div class="detail-notes-label">Notes</div>
+            ${est.notes}
+          </div>` : ''}
+          <div class="detail-footer">
+            <span class="detail-footer-meta">Saved by ${est.author || 'unknown'}</span>
+            <span class="detail-footer-meta">${est.savedAt || ''}</span>
+          </div>
+        </div>
+      `;
+
+      card.querySelector('.eng-header').addEventListener('click', () => {
+        card.classList.toggle('open');
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  /* ── Init ── */
+  if (config) {
+    document.getElementById('setup-overlay').classList.add('hidden');
+    setSyncStatus('loading', 'loading…');
+    fetchEstimates();
+  } else {
+    openSettings();
+  }
+</script>
+</body>
+</html>
