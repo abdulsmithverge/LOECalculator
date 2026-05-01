@@ -86,18 +86,18 @@
   .role-card-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
   .role-remove-btn { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 14px; padding: 2px 4px; line-height: 1; }
   .role-remove-btn:hover { color: var(--red); }
-  .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .role-calcs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .role-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .role-calcs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
   .role-calc { background: var(--surface); border-radius: 6px; padding: 8px 10px; }
   .role-calc-label { font-family: var(--mono); font-size: 10px; color: var(--text-faint); margin-bottom: 2px; letter-spacing: 0.04em; text-transform: uppercase; }
   .role-calc-value { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-muted); }
   .add-role-btn { display: flex; align-items: center; gap: 7px; background: none; border: 1px dashed var(--border-strong); border-radius: 8px; padding: 10px 16px; cursor: pointer; color: var(--text-muted); font-family: var(--sans); font-size: 14px; width: 100%; transition: border-color 0.15s, color 0.15s; }
   .add-role-btn:hover { border-color: var(--text-muted); color: var(--text); }
 
-  /* Billing section */
+  /* Billing */
   .billing-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
 
-  /* Margin reference key */
+  /* Margin key */
   .margin-key { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .margin-key-header { background: var(--surface2); padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; }
   .margin-key-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
@@ -162,7 +162,8 @@
     .main { border-right: none; border-bottom: 1px solid var(--border); }
   }
   @media (max-width: 520px) {
-    .field-grid.cols-2, .role-grid, .role-calcs, .billing-row { grid-template-columns: 1fr; }
+    .field-grid.cols-2, .role-inputs, .billing-row { grid-template-columns: 1fr; }
+    .role-calcs { grid-template-columns: 1fr 1fr; }
     .metrics { grid-template-columns: 1fr; }
     .margin-key-rows { grid-template-columns: 1fr; }
     .header { padding: 0 1rem; }
@@ -250,7 +251,6 @@
 
     <div class="form-section">
       <div class="form-section-label">Billing &amp; margin</div>
-
       <div class="billing-row">
         <div class="field">
           <label>Total billing amount</label>
@@ -261,8 +261,6 @@
           <input type="text" id="out-total-costs" readonly placeholder="—" />
         </div>
       </div>
-
-      <!-- Margin reference key -->
       <div class="margin-key">
         <div class="margin-key-header">
           <span class="margin-key-title">Margin reference</span>
@@ -320,23 +318,23 @@
   function uid() { return Math.random().toString(36).slice(2, 8); }
   function getTotalMonths() { return parseFloat(document.getElementById('total-months').value) || 0; }
 
-  // billing needed to hit a target margin given costs: billing = costs / (1 - margin)
   function billingForMargin(costs, targetMarginPct) {
     return costs / (1 - targetMarginPct / 100);
   }
 
   function deriveRole(r) {
-    const costs   = (r.hours || 0) * (r.rate || 0);
-    const hrsWeek = (r.hours && r.months) ? (r.hours / r.months) / 4 : null;
-    return { costs, hrsWeek };
+    const costs    = (r.hours || 0) * (r.rate || 0);
+    const hrsWeek  = (r.hours && r.months) ? (r.hours / r.months) / 4 : null;
+    const hrsMonth = hrsWeek ? hrsWeek * 4 : null;  // hrs/week * 4
+    return { costs, hrsWeek, hrsMonth };
   }
 
   function deriveTotals(roles, billingAmount) {
-    const totalCosts  = (roles || []).reduce((s, r) => s + (r.hours || 0) * (r.rate || 0), 0);
-    const totalHours  = (roles || []).reduce((s, r) => s + (r.hours || 0), 0);
-    const billing     = billingAmount || 0;
-    const netProfit   = billing - totalCosts;
-    const margin      = billing > 0 ? (netProfit / billing) * 100 : NaN;
+    const totalCosts = (roles || []).reduce((s, r) => s + (r.hours || 0) * (r.rate || 0), 0);
+    const totalHours = (roles || []).reduce((s, r) => s + (r.hours || 0), 0);
+    const billing    = billingAmount || 0;
+    const netProfit  = billing - totalCosts;
+    const margin     = billing > 0 ? (netProfit / billing) * 100 : NaN;
     return { totalCosts, totalHours, billing, netProfit, margin };
   }
 
@@ -344,21 +342,17 @@
   function renderMarginKey(totalCosts) {
     const rowsEl = document.getElementById('margin-key-rows');
     const subEl  = document.getElementById('margin-key-sub');
-
     if (!totalCosts || totalCosts <= 0) {
       rowsEl.innerHTML = '<div class="margin-key-empty">Add roles and costs above to see billing targets for 40%, 45%, and 50% margin.</div>';
       subEl.textContent = 'Enter role costs to see targets';
       return;
     }
-
     subEl.textContent = `Based on ${currency(totalCosts)} total costs`;
-
     const targets = [
       { pct: 40, cls: 'pct-40', label: 'Minimum target' },
       { pct: 45, cls: 'pct-45', label: 'Mid target' },
       { pct: 50, cls: 'pct-50', label: 'Strong target' },
     ];
-
     rowsEl.innerHTML = targets.map(t => {
       const billing = billingForMargin(totalCosts, t.pct);
       const profit  = billing - totalCosts;
@@ -367,8 +361,7 @@
           <div class="margin-key-pct ${t.cls}">${t.pct}% — ${t.label}</div>
           <div class="margin-key-billing">${currency(billing)}</div>
           <div class="margin-key-profit">+${currency(profit)} profit</div>
-        </div>
-      `;
+        </div>`;
     }).join('');
   }
 
@@ -410,7 +403,7 @@
           <span class="role-card-title">Role ${idx + 1}</span>
           <button class="role-remove-btn" onclick="removeRole('${r.id}')">&#x2715;</button>
         </div>
-        <div class="role-grid">
+        <div class="role-inputs">
           <div class="field" style="grid-column:1/-1">
             <label>Role title</label>
             <input type="text" id="r-title-${r.id}" placeholder="e.g. Senior Consultant" value="${r.title || ''}" oninput="syncAndCalc()" />
@@ -430,6 +423,10 @@
             <div class="role-calc-value" id="r-hrsweek-${r.id}">${d.hrsWeek ? d.hrsWeek.toFixed(1) : '—'}</div>
           </div>
           <div class="role-calc">
+            <div class="role-calc-label">Hrs / month</div>
+            <div class="role-calc-value" id="r-hrsmonth-${r.id}">${d.hrsMonth ? d.hrsMonth.toFixed(1) : '—'}</div>
+          </div>
+          <div class="role-calc">
             <div class="role-calc-label">Verge costs</div>
             <div class="role-calc-value" id="r-costs-${r.id}">${r.hours && r.rate ? currency(d.costs) : '—'}</div>
           </div>
@@ -443,10 +440,12 @@
     syncRolesFromDOM();
     const months = getTotalMonths();
     roles.forEach(r => {
-      const d = deriveRole({ ...r, months });
+      const d  = deriveRole({ ...r, months });
       const hw = document.getElementById(`r-hrsweek-${r.id}`);
+      const hm = document.getElementById(`r-hrsmonth-${r.id}`);
       const rc = document.getElementById(`r-costs-${r.id}`);
-      if (hw) hw.textContent = d.hrsWeek ? d.hrsWeek.toFixed(1) : '—';
+      if (hw) hw.textContent = d.hrsWeek  ? d.hrsWeek.toFixed(1)  : '—';
+      if (hm) hm.textContent = d.hrsMonth ? d.hrsMonth.toFixed(1) : '—';
       if (rc) rc.textContent = r.hours && r.rate ? currency(d.costs) : '—';
     });
     calcTotals();
@@ -458,7 +457,9 @@
     roles.forEach(r => {
       const d  = deriveRole(r);
       const hw = document.getElementById(`r-hrsweek-${r.id}`);
-      if (hw) hw.textContent = d.hrsWeek ? d.hrsWeek.toFixed(1) : '—';
+      const hm = document.getElementById(`r-hrsmonth-${r.id}`);
+      if (hw) hw.textContent = d.hrsWeek  ? d.hrsWeek.toFixed(1)  : '—';
+      if (hm) hm.textContent = d.hrsMonth ? d.hrsMonth.toFixed(1) : '—';
     });
 
     const billing = parseFloat(document.getElementById('billing-amount').value) || 0;
