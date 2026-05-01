@@ -21,6 +21,9 @@
     --green: #1a6644;
     --green-bg: #e6f2ec;
     --green-border: #b6dfc9;
+    --amber: #7a4c0a;
+    --amber-bg: #fdf3e0;
+    --amber-border: #f0d090;
     --red: #8c2a1c;
     --red-bg: #f5e8e6;
     --red-border: #e8c0b8;
@@ -66,7 +69,6 @@
   .form-section-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
   .field-grid { display: grid; gap: 12px; }
   .field-grid.cols-2 { grid-template-columns: 1fr 1fr; }
-  .field-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
   .field { display: flex; flex-direction: column; gap: 5px; }
   .field label { font-size: 11px; font-family: var(--mono); color: var(--text-muted); letter-spacing: 0.04em; }
   .field input { height: 38px; border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 0 10px; font-family: var(--mono); font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; width: 100%; }
@@ -92,8 +94,23 @@
   .add-role-btn { display: flex; align-items: center; gap: 7px; background: none; border: 1px dashed var(--border-strong); border-radius: 8px; padding: 10px 16px; cursor: pointer; color: var(--text-muted); font-family: var(--sans); font-size: 14px; width: 100%; transition: border-color 0.15s, color 0.15s; }
   .add-role-btn:hover { border-color: var(--text-muted); color: var(--text); }
 
-  /* Engagement-level billing */
-  .billing-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  /* Billing section */
+  .billing-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+  /* Margin reference key */
+  .margin-key { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .margin-key-header { background: var(--surface2); padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .margin-key-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .margin-key-sub { font-family: var(--mono); font-size: 10px; color: var(--text-faint); }
+  .margin-key-rows { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+  .margin-key-cell { background: var(--surface); padding: 12px 14px; }
+  .margin-key-pct { font-family: var(--mono); font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+  .margin-key-pct.pct-40 { color: var(--amber); }
+  .margin-key-pct.pct-45 { color: #2a7a5a; }
+  .margin-key-pct.pct-50 { color: var(--green); }
+  .margin-key-billing { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .margin-key-profit { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+  .margin-key-empty { font-family: var(--mono); font-size: 11px; color: var(--text-faint); padding: 12px 14px; background: var(--surface); grid-column: 1 / -1; }
 
   /* Metrics */
   .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
@@ -145,8 +162,9 @@
     .main { border-right: none; border-bottom: 1px solid var(--border); }
   }
   @media (max-width: 520px) {
-    .field-grid.cols-2, .field-grid.cols-3, .role-grid, .role-calcs, .billing-row { grid-template-columns: 1fr; }
+    .field-grid.cols-2, .role-grid, .role-calcs, .billing-row { grid-template-columns: 1fr; }
     .metrics { grid-template-columns: 1fr; }
+    .margin-key-rows { grid-template-columns: 1fr; }
     .header { padding: 0 1rem; }
     .main { padding: 1.25rem; }
   }
@@ -232,6 +250,7 @@
 
     <div class="form-section">
       <div class="form-section-label">Billing &amp; margin</div>
+
       <div class="billing-row">
         <div class="field">
           <label>Total billing amount</label>
@@ -240,6 +259,17 @@
         <div class="field">
           <label>Total Verge costs <span style="color:var(--text-faint)">(calc)</span></label>
           <input type="text" id="out-total-costs" readonly placeholder="—" />
+        </div>
+      </div>
+
+      <!-- Margin reference key -->
+      <div class="margin-key">
+        <div class="margin-key-header">
+          <span class="margin-key-title">Margin reference</span>
+          <span class="margin-key-sub" id="margin-key-sub">Enter role costs to see targets</span>
+        </div>
+        <div class="margin-key-rows" id="margin-key-rows">
+          <div class="margin-key-empty">Add roles and costs above to see billing targets for 40%, 45%, and 50% margin.</div>
         </div>
       </div>
     </div>
@@ -288,32 +318,61 @@
   function currency(n) { if (!isFinite(n)) return '—'; return '$' + Math.round(n).toLocaleString('en-US'); }
   function pct(n) { if (!isFinite(n)) return '—'; return n.toFixed(1) + '%'; }
   function uid() { return Math.random().toString(36).slice(2, 8); }
-
   function getTotalMonths() { return parseFloat(document.getElementById('total-months').value) || 0; }
 
-  function calcHrsWeek(hours, months) {
-    // (total hours / total months) / 4
-    if (!hours || !months) return null;
-    return (hours / months) / 4;
+  // billing needed to hit a target margin given costs: billing = costs / (1 - margin)
+  function billingForMargin(costs, targetMarginPct) {
+    return costs / (1 - targetMarginPct / 100);
   }
 
   function deriveRole(r) {
-    const costs = (r.hours || 0) * (r.rate || 0);
-    const hrsWeek = calcHrsWeek(r.hours, r.months);
-    const hrsMonth = hrsWeek ? hrsWeek * 4 : null;
-    return { costs, hrsWeek, hrsMonth };
+    const costs   = (r.hours || 0) * (r.rate || 0);
+    const hrsWeek = (r.hours && r.months) ? (r.hours / r.months) / 4 : null;
+    return { costs, hrsWeek };
   }
 
   function deriveTotals(roles, billingAmount) {
-    const totalCosts   = (roles || []).reduce((s, r) => s + (r.hours || 0) * (r.rate || 0), 0);
-    const totalHours   = (roles || []).reduce((s, r) => s + (r.hours || 0), 0);
-    const billing      = billingAmount || 0;
-    const netProfit    = billing - totalCosts;
-    const margin       = billing > 0 ? (netProfit / billing) * 100 : NaN;
+    const totalCosts  = (roles || []).reduce((s, r) => s + (r.hours || 0) * (r.rate || 0), 0);
+    const totalHours  = (roles || []).reduce((s, r) => s + (r.hours || 0), 0);
+    const billing     = billingAmount || 0;
+    const netProfit   = billing - totalCosts;
+    const margin      = billing > 0 ? (netProfit / billing) * 100 : NaN;
     return { totalCosts, totalHours, billing, netProfit, margin };
   }
 
-  /* ── Role UI ── */
+  /* ── Margin key ── */
+  function renderMarginKey(totalCosts) {
+    const rowsEl = document.getElementById('margin-key-rows');
+    const subEl  = document.getElementById('margin-key-sub');
+
+    if (!totalCosts || totalCosts <= 0) {
+      rowsEl.innerHTML = '<div class="margin-key-empty">Add roles and costs above to see billing targets for 40%, 45%, and 50% margin.</div>';
+      subEl.textContent = 'Enter role costs to see targets';
+      return;
+    }
+
+    subEl.textContent = `Based on ${currency(totalCosts)} total costs`;
+
+    const targets = [
+      { pct: 40, cls: 'pct-40', label: 'Minimum target' },
+      { pct: 45, cls: 'pct-45', label: 'Mid target' },
+      { pct: 50, cls: 'pct-50', label: 'Strong target' },
+    ];
+
+    rowsEl.innerHTML = targets.map(t => {
+      const billing = billingForMargin(totalCosts, t.pct);
+      const profit  = billing - totalCosts;
+      return `
+        <div class="margin-key-cell">
+          <div class="margin-key-pct ${t.cls}">${t.pct}% — ${t.label}</div>
+          <div class="margin-key-billing">${currency(billing)}</div>
+          <div class="margin-key-profit">+${currency(profit)} profit</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /* ── Roles ── */
   function addRole(data) {
     const months = getTotalMonths();
     const r = data || { id: uid(), title: '', hours: '', rate: '', months };
@@ -329,17 +388,13 @@
   }
 
   function syncRolesFromDOM() {
-    roles = roles.map(r => {
-      const hours = parseFloat(document.getElementById(`r-hours-${r.id}`).value) || 0;
-      const months = getTotalMonths();
-      return {
-        id: r.id,
-        title: document.getElementById(`r-title-${r.id}`).value,
-        hours,
-        rate:  parseFloat(document.getElementById(`r-rate-${r.id}`).value) || 0,
-        months,
-      };
-    });
+    roles = roles.map(r => ({
+      id:     r.id,
+      title:  document.getElementById(`r-title-${r.id}`).value,
+      hours:  parseFloat(document.getElementById(`r-hours-${r.id}`).value) || 0,
+      rate:   parseFloat(document.getElementById(`r-rate-${r.id}`).value) || 0,
+      months: getTotalMonths(),
+    }));
   }
 
   function renderRoles() {
@@ -398,12 +453,10 @@
   }
 
   function calcTotals() {
-    // Re-sync months into roles so hrs/week stays accurate when months changes
     const months = getTotalMonths();
     roles = roles.map(r => ({ ...r, months }));
-    // Also refresh hrs/week display for each role
     roles.forEach(r => {
-      const d = deriveRole(r);
+      const d  = deriveRole(r);
       const hw = document.getElementById(`r-hrsweek-${r.id}`);
       if (hw) hw.textContent = d.hrsWeek ? d.hrsWeek.toFixed(1) : '—';
     });
@@ -424,6 +477,8 @@
     const margEl = document.getElementById('m-margin');
     margEl.textContent = isFinite(t.margin) ? pct(t.margin) : '—';
     margEl.className = 'metric-value' + (isFinite(t.margin) ? (t.margin >= 0 ? ' pos' : ' neg') : '');
+
+    renderMarginKey(t.totalCosts);
   }
 
   /* ── GitHub ── */
@@ -523,10 +578,10 @@
 
   function clearForm() {
     editingId = null;
-    document.getElementById('eng-name').value       = '';
-    document.getElementById('total-months').value   = '';
-    document.getElementById('billing-amount').value = '';
-    document.getElementById('notes').value          = '';
+    document.getElementById('eng-name').value        = '';
+    document.getElementById('total-months').value    = '';
+    document.getElementById('billing-amount').value  = '';
+    document.getElementById('notes').value           = '';
     document.getElementById('out-total-costs').value = '';
     roles = [];
     renderRoles();
