@@ -1,44 +1,5 @@
 [
   {
-    "id": "1778701008151",
-    "name": "Totem / USDS Jan - Mar 2026",
-    "totalMonths": 3,
-    "billingAmount": 151306.5,
-    "notes": "SubK for USDS Extension",
-    "roles": [
-      {
-        "id": "ztd1nw",
-        "title": "Engagement Lead - CJ",
-        "hours": 244,
-        "rate": 120,
-        "months": 3
-      },
-      {
-        "id": "8mncpw",
-        "title": "Sourcer - Mel Pacheco",
-        "hours": 180,
-        "rate": 100,
-        "months": 3
-      },
-      {
-        "id": "xxa5km",
-        "title": "Sourcer - Matt Dickson",
-        "hours": 200.6,
-        "rate": 120,
-        "months": 3
-      },
-      {
-        "id": "erxdnb",
-        "title": "Sourcer - Javier Dutan",
-        "hours": 198.1,
-        "rate": 100,
-        "months": 3
-      }
-    ],
-    "author": "Abdul Smith",
-    "savedAt": "May 13, 2026"
-  },
-  {
     "id": "1777663522091",
     "name": "Inclined Analytics (Test)",
     "totalMonths": 8,
