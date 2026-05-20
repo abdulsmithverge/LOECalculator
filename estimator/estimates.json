@@ -1,5 +1,30 @@
 [
   {
+    "id": "1779302782055",
+    "name": "Incined Hiring",
+    "totalMonths": 4.5,
+    "billingAmount": 46500,
+    "notes": "Hiring for 4 roles - + additional 20 hours beyond original estimate for Amanda.",
+    "roles": [
+      {
+        "id": "fcxzch",
+        "title": "Recruiter",
+        "hours": 255,
+        "rate": 100,
+        "months": 4.5
+      },
+      {
+        "id": "z7tduo",
+        "title": "Client Lead",
+        "hours": 33,
+        "rate": 119,
+        "months": 4.5
+      }
+    ],
+    "author": "Abdul Smith",
+    "savedAt": "May 20, 2026"
+  },
+  {
     "id": "1778789420143",
     "name": "Totem - USDS (Actual SubK Hours)",
     "totalMonths": 2,
