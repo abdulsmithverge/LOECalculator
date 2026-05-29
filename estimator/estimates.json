@@ -3,7 +3,7 @@
     "id": "1779990742919",
     "name": "Civilla Ops Assitant Hire",
     "totalMonths": 2,
-    "billingAmount": 17000,
+    "billingAmount": 18500,
     "notes": "",
     "roles": [
       {
@@ -16,7 +16,7 @@
       {
         "id": "c3rblp",
         "title": "Sr. Consultant / Recruiter (Daniella)",
-        "hours": 60,
+        "hours": 65,
         "rate": 100,
         "months": 2
       }
