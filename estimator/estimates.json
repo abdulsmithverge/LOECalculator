@@ -1,5 +1,37 @@
 [
   {
+    "id": "1781640867062",
+    "name": "Focus Consulting - Talent Acquisition 2 Roles",
+    "totalMonths": 4,
+    "billingAmount": 52000,
+    "notes": "Business Development - navigating what the needs are and right level is for this role\nHR Manager role - also role definition",
+    "roles": [
+      {
+        "id": "lr9aie",
+        "title": "Account Lead",
+        "hours": 32,
+        "rate": 200,
+        "months": 4
+      },
+      {
+        "id": "r47b8x",
+        "title": "Client Lead",
+        "hours": 40,
+        "rate": 145,
+        "months": 4
+      },
+      {
+        "id": "qor1c6",
+        "title": "Senior Recruiting Consultant",
+        "hours": 200,
+        "rate": 100,
+        "months": 4
+      }
+    ],
+    "author": "Eloise",
+    "savedAt": "Jun 16, 2026"
+  },
+  {
     "id": "1781640630680",
     "name": "Focus Consulting - Fractional HR Support",
     "totalMonths": 6,
