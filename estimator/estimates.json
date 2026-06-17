@@ -34,27 +34,27 @@
   {
     "id": "1781640630680",
     "name": "Focus Consulting - Fractional HR Support",
-    "totalMonths": 6,
-    "billingAmount": 63000,
+    "totalMonths": 5,
+    "billingAmount": 60000,
     "notes": "Performance Management",
     "roles": [
       {
         "id": "l9vxct",
-        "title": "Account and Client Lead",
-        "hours": 40,
+        "title": "Account and Client Lead (Eloise)",
+        "hours": 60,
         "rate": 145,
-        "months": 6
+        "months": 5
       },
       {
         "id": "lxty5c",
         "title": "Senior HRBP Consultant",
-        "hours": 287,
+        "hours": 240,
         "rate": 100,
-        "months": 6
+        "months": 5
       }
     ],
     "author": "Eloise",
-    "savedAt": "Jun 16, 2026"
+    "savedAt": "Jun 17, 2026"
   },
   {
     "id": "1779990742919",
