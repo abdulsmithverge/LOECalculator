@@ -3,22 +3,24 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Engagement Estimator</title>
+<title>Verge Margin Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root {
+    --verge-dark: #0d1319;
+    --verge-magenta: #E918C2;
+    --verge-navy: #18169E;
+    --verge-teal: #1AE5D0;
     --bg: #f5f4f0;
     --surface: #ffffff;
     --surface2: #f0efe9;
     --border: #e0dfd8;
     --border-strong: #c8c7be;
-    --text: #1a1a18;
+    --text: #0d1319;
     --text-muted: #7a7970;
     --text-faint: #b0afa6;
-    --accent: #1a1a18;
-    --accent-fg: #f5f4f0;
-    --green: #1a6644;
+    --green: #0F6E56;
     --green-bg: #e6f2ec;
     --green-border: #b6dfc9;
     --amber: #7a4c0a;
@@ -27,139 +29,153 @@
     --red: #8c2a1c;
     --red-bg: #f5e8e6;
     --red-border: #e8c0b8;
-    --mono: 'DM Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.5; }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.5; }
 
-  .header { background: var(--accent); color: var(--accent-fg); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
-  .header-brand { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; }
-  .header-right { display: flex; align-items: center; gap: 14px; }
-  .sync-status { font-family: var(--mono); font-size: 11px; display: flex; align-items: center; gap: 6px; opacity: 0.5; }
-  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-  .sync-status.ok { color: #6fcfa0; opacity: 1; }
+  /* Header */
+  .header { background: var(--verge-dark); color: #fff; padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .header-brand { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 300; color: #fff; letter-spacing: 0.02em; }
+  .header-brand strong { font-weight: 500; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .sync-status { font-family: 'Poppins', sans-serif; font-size: 11px; display: flex; align-items: center; gap: 5px; opacity: 0.5; color: #fff; }
+  .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .sync-status.ok { color: var(--verge-teal); opacity: 1; }
   .sync-status.err { color: #f08080; opacity: 1; }
-  .sync-status.loading { color: #f5f4f0; opacity: 0.5; }
-  .header-btn { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; color: rgba(255,255,255,0.7); font-family: var(--mono); font-size: 11px; padding: 4px 10px; cursor: pointer; letter-spacing: 0.04em; text-decoration: none; display: inline-flex; align-items: center; }
+  .sync-status.loading { color: #fff; opacity: 0.5; }
+  .header-btn { background: none; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; color: rgba(255,255,255,0.7); font-family: 'Poppins', sans-serif; font-size: 11px; padding: 4px 10px; cursor: pointer; letter-spacing: 0.02em; text-decoration: none; display: inline-flex; align-items: center; }
   .header-btn:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
 
-  .overlay { position: fixed; inset: 0; background: rgba(26,26,24,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  /* Diamond logomark */
+  .diamond-mark { flex-shrink: 0; }
+
+  /* Setup overlay */
+  .overlay { position: fixed; inset: 0; background: rgba(13,19,25,0.7); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
   .overlay.hidden { display: none; }
   .setup-card { background: var(--surface); border-radius: 12px; padding: 2rem; width: 100%; max-width: 480px; }
-  .setup-title { font-size: 18px; font-weight: 500; margin-bottom: 0.25rem; }
+  .setup-title { font-size: 18px; font-weight: 500; margin-bottom: 0.25rem; color: var(--text); }
   .setup-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
   .setup-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
-  .setup-field label { font-family: var(--mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
-  .setup-field input { height: 40px; border: 1px solid var(--border); border-radius: 6px; padding: 0 12px; font-family: var(--mono); font-size: 13px; color: var(--text); outline: none; width: 100%; }
-  .setup-field input:focus { border-color: var(--border-strong); }
+  .setup-field label { font-family: 'Poppins', sans-serif; font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
+  .setup-field input { height: 40px; border: 1px solid var(--border); border-radius: 6px; padding: 0 12px; font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--text); outline: none; width: 100%; }
+  .setup-field input:focus { border-color: var(--verge-magenta); }
   .setup-field input::placeholder { color: var(--text-faint); }
   .setup-hint { font-size: 12px; color: var(--text-faint); margin-top: 4px; line-height: 1.5; }
-  .setup-hint a { color: var(--text-muted); }
+  .setup-hint a { color: var(--verge-navy); }
   .setup-actions { display: flex; gap: 10px; margin-top: 1.5rem; }
-  .setup-error { font-family: var(--mono); font-size: 12px; color: var(--red); margin-top: 10px; display: none; }
+  .setup-error { font-family: 'Poppins', sans-serif; font-size: 12px; color: var(--red); margin-top: 10px; display: none; }
   .setup-error.show { display: block; }
 
+  /* Layout */
   .layout { display: grid; grid-template-columns: 1fr 320px; min-height: calc(100vh - 56px); }
-  .main { padding: 2rem; border-right: 1px solid var(--border); overflow-y: auto; }
-  .page-title { font-size: 22px; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
-  .page-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 2rem; font-family: var(--mono); }
+  .main { padding: 2rem; border-right: 1px solid var(--border); overflow-y: auto; background: var(--surface); }
+  .page-title { font-size: 22px; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 0.25rem; color: var(--text); }
+  .page-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 2rem; font-family: 'Poppins', sans-serif; }
 
+  /* Form */
   .form-section { margin-bottom: 2rem; }
-  .form-section-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .form-section-label { font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
   .field-grid { display: grid; gap: 12px; }
   .field-grid.cols-2 { grid-template-columns: 1fr 1fr; }
   .field { display: flex; flex-direction: column; gap: 5px; }
-  .field label { font-size: 11px; font-family: var(--mono); color: var(--text-muted); letter-spacing: 0.04em; }
-  .field input { height: 38px; border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 0 10px; font-family: var(--mono); font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; width: 100%; }
-  .field input:focus { border-color: var(--border-strong); }
+  .field label { font-size: 11px; font-family: 'Poppins', sans-serif; color: var(--text-muted); }
+  .field input { height: 38px; border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 0 10px; font-family: 'Poppins', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; width: 100%; }
+  .field input:focus { border-color: var(--verge-magenta); }
   .field input::placeholder { color: var(--text-faint); }
   .field input[readonly] { background: var(--surface2); color: var(--text-muted); cursor: default; }
-  .field select { height: 38px; border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 0 10px; font-family: var(--mono); font-size: 13px; color: var(--text); outline: none; width: 100%; cursor: pointer; }
-  .field select:focus { border-color: var(--border-strong); }
-  .field textarea { border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 8px 10px; font-family: var(--sans); font-size: 14px; color: var(--text); outline: none; resize: vertical; width: 100%; min-height: 64px; }
-  .field textarea:focus { border-color: var(--border-strong); }
+  .field select { height: 38px; border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 0 10px; font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--text); outline: none; width: 100%; cursor: pointer; }
+  .field select:focus { border-color: var(--verge-magenta); }
+  .field textarea { border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 8px 10px; font-family: 'Poppins', sans-serif; font-size: 14px; color: var(--text); outline: none; resize: vertical; width: 100%; min-height: 64px; }
+  .field textarea:focus { border-color: var(--verge-magenta); }
   .field textarea::placeholder { color: var(--text-faint); }
 
-  .role-type-pill { font-family: var(--mono); font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  /* Role type pills */
+  .role-type-pill { font-family: 'Poppins', sans-serif; font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
   .role-type-pill.hourly { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
   .role-type-pill.fixed { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
 
+  /* Roles */
   .roles-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
   .role-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
   .role-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .role-card-title-group { display: flex; align-items: center; gap: 8px; }
-  .role-card-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .role-card-title { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
   .role-remove-btn { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 14px; padding: 2px 4px; line-height: 1; }
   .role-remove-btn:hover { color: var(--red); }
   .role-type-row { margin-bottom: 10px; }
   .role-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .role-calcs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
   .role-calc { background: var(--surface); border-radius: 6px; padding: 8px 10px; }
-  .role-calc-label { font-family: var(--mono); font-size: 10px; color: var(--text-faint); margin-bottom: 2px; letter-spacing: 0.04em; text-transform: uppercase; }
-  .role-calc-value { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text-muted); }
-  .add-role-btn { display: flex; align-items: center; gap: 7px; background: none; border: 1px dashed var(--border-strong); border-radius: 8px; padding: 10px 16px; cursor: pointer; color: var(--text-muted); font-family: var(--sans); font-size: 14px; width: 100%; transition: border-color 0.15s, color 0.15s; }
-  .add-role-btn:hover { border-color: var(--text-muted); color: var(--text); }
+  .role-calc-label { font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600; color: var(--text-faint); margin-bottom: 2px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .role-calc-value { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: var(--text-muted); }
+  .add-role-btn { display: flex; align-items: center; gap: 7px; background: none; border: 1px dashed var(--border-strong); border-radius: 8px; padding: 10px 16px; cursor: pointer; color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 14px; width: 100%; transition: border-color 0.15s, color 0.15s; }
+  .add-role-btn:hover { border-color: var(--verge-magenta); color: var(--verge-magenta); }
 
+  /* Billing */
   .billing-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
 
+  /* Margin key */
   .margin-key { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .margin-key-header { background: var(--surface2); padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; }
-  .margin-key-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
-  .margin-key-sub { font-family: var(--mono); font-size: 10px; color: var(--text-faint); }
+  .margin-key-title { font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .margin-key-sub { font-family: 'Poppins', sans-serif; font-size: 10px; color: var(--text-faint); }
   .margin-key-rows { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
   .margin-key-cell { background: var(--surface); padding: 12px 14px; }
-  .margin-key-pct { font-family: var(--mono); font-size: 12px; font-weight: 500; margin-bottom: 4px; }
-  .margin-key-pct.pct-40 { color: var(--amber); }
-  .margin-key-pct.pct-45 { color: #2a7a5a; }
-  .margin-key-pct.pct-50 { color: var(--green); }
-  .margin-key-billing { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
-  .margin-key-profit { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
-  .margin-key-empty { font-family: var(--mono); font-size: 11px; color: var(--text-faint); padding: 12px 14px; background: var(--surface); grid-column: 1 / -1; }
+  .margin-key-pct { font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+  .margin-key-pct.pct-40 { color: var(--verge-magenta); }
+  .margin-key-pct.pct-45 { color: var(--verge-navy); }
+  .margin-key-pct.pct-50 { color: #0d9e8e; }
+  .margin-key-billing { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .margin-key-profit { font-family: 'Poppins', sans-serif; font-size: 11px; color: var(--text-muted); }
+  .margin-key-empty { font-family: 'Poppins', sans-serif; font-size: 11px; color: var(--text-faint); padding: 12px 14px; background: var(--surface); grid-column: 1 / -1; }
 
+  /* Metrics */
   .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
   .metric { background: var(--surface); padding: 1.1rem 1rem; }
-  .metric-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 5px; }
-  .metric-value { font-family: var(--mono); font-size: 20px; font-weight: 500; color: var(--text); }
+  .metric-label { font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 5px; }
+  .metric-value { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 500; color: var(--text); }
   .metric-value.pos { color: var(--green); }
   .metric-value.neg { color: var(--red); }
 
-  .btn { height: 38px; padding: 0 18px; border-radius: 6px; font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: opacity 0.15s, background 0.15s; }
-  .btn-primary { background: var(--accent); color: var(--accent-fg); }
-  .btn-primary:hover { opacity: 0.82; }
+  /* Buttons */
+  .btn { height: 38px; padding: 0 18px; border-radius: 6px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: opacity 0.15s, background 0.15s; }
+  .btn-primary { background: var(--verge-dark); color: #fff; }
+  .btn-primary:hover { background: #1e2832; }
   .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-ghost { background: transparent; border-color: var(--border-strong); color: var(--text-muted); }
   .btn-ghost:hover { background: var(--surface2); color: var(--text); }
   .actions { display: flex; gap: 10px; align-items: center; }
-  .save-flash { font-family: var(--mono); font-size: 12px; color: var(--green); opacity: 0; transition: opacity 0.2s; }
+  .save-flash { font-family: 'Poppins', sans-serif; font-size: 12px; color: var(--green); opacity: 0; transition: opacity 0.2s; }
   .save-flash.show { opacity: 1; }
   .save-flash.err { color: var(--red); opacity: 1; }
 
+  /* Sidebar */
   .sidebar { background: var(--surface); display: flex; flex-direction: column; }
   .sidebar-header { padding: 1.25rem 1.5rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .sidebar-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .sidebar-title { font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
   .sidebar-meta { display: flex; align-items: center; gap: 8px; }
-  .sidebar-count { font-family: var(--mono); font-size: 11px; background: var(--surface2); color: var(--text-muted); border-radius: 99px; padding: 2px 8px; }
+  .sidebar-count { font-family: 'Poppins', sans-serif; font-size: 11px; background: var(--surface2); color: var(--text-muted); border-radius: 99px; padding: 2px 8px; }
   .sidebar-refresh { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 15px; padding: 2px 4px; }
-  .sidebar-refresh:hover { color: var(--text-muted); }
+  .sidebar-refresh:hover { color: var(--verge-magenta); }
   .saved-list { flex: 1; overflow-y: auto; padding: 0.75rem; display: flex; flex-direction: column; gap: 6px; }
   .saved-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
-  .saved-card:hover { border-color: var(--border-strong); background: var(--bg); }
-  .saved-card.editing { border-color: var(--accent); background: var(--bg); }
+  .saved-card:hover { border-color: var(--verge-magenta); background: var(--bg); }
+  .saved-card.editing { border-left: 3px solid var(--verge-magenta); background: var(--bg); }
   .sc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 3px; }
   .sc-name { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; padding-right: 8px; }
-  .sc-roles { font-family: var(--mono); font-size: 10px; color: var(--text-muted); margin-bottom: 7px; }
+  .sc-roles { font-family: 'Poppins', sans-serif; font-size: 10px; color: var(--text-muted); margin-bottom: 7px; }
   .sc-stats { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .sc-stat { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
-  .sc-badge { display: inline-block; font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
-  .sc-badge.pos { background: var(--green-bg); color: var(--green); }
-  .sc-badge.neg { background: var(--red-bg); color: var(--red); }
+  .sc-stat { font-family: 'Poppins', sans-serif; font-size: 11px; color: var(--text-muted); }
+  .sc-badge { display: inline-block; font-family: 'Poppins', sans-serif; font-size: 10px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
+  .sc-badge.pos { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .sc-badge.neg { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
   .sc-footer { display: flex; justify-content: space-between; margin-top: 6px; }
-  .sc-author { font-family: var(--mono); font-size: 10px; color: var(--text-faint); }
-  .sc-date { font-family: var(--mono); font-size: 10px; color: var(--text-faint); }
+  .sc-author { font-family: 'Poppins', sans-serif; font-size: 10px; color: var(--text-faint); }
+  .sc-date { font-family: 'Poppins', sans-serif; font-size: 10px; color: var(--text-faint); }
   .del-btn { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 14px; line-height: 1; padding: 2px; flex-shrink: 0; }
   .del-btn:hover { color: var(--red); }
-  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-faint); font-family: var(--mono); font-size: 12px; line-height: 1.8; }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-faint); font-family: 'Poppins', sans-serif; font-size: 12px; line-height: 1.8; }
 
   @media (max-width: 860px) {
     .layout { grid-template-columns: 1fr; }
@@ -212,7 +228,14 @@
 </div>
 
 <header class="header">
-  <span class="header-brand">Engagement Estimator</span>
+  <div class="header-left">
+    <svg class="diamond-mark" width="24" height="20" viewBox="0 0 24 20" fill="none">
+      <polygon points="7,0 14,10 7,20 0,10" fill="#E918C2" opacity="0.9"/>
+      <polygon points="11,2 18,10 11,18 4,10" fill="#18169E" opacity="0.85"/>
+      <polygon points="15,0 24,10 15,20 6,10" fill="#1AE5D0" opacity="0.85"/>
+    </svg>
+    <span class="header-brand">verge <strong>margin calculator</strong></span>
+  </div>
   <div class="header-right">
     <span class="sync-status loading" id="sync-status"><span class="sync-dot"></span><span id="sync-text">not connected</span></span>
     <a href="dashboard.html" class="header-btn">Dashboard &#8594;</a>
@@ -228,42 +251,25 @@
     <div class="form-section">
       <div class="form-section-label">Engagement details</div>
       <div class="field-grid cols-2">
-        <div class="field">
-          <label>Engagement name</label>
-          <input type="text" id="eng-name" placeholder="e.g. Acme Corp — Phase 1" />
-        </div>
-        <div class="field">
-          <label>Total months</label>
-          <input type="number" id="total-months" placeholder="0" min="0" oninput="calcTotals()" />
-        </div>
+        <div class="field"><label>Engagement name</label><input type="text" id="eng-name" placeholder="e.g. Acme Corp — Phase 1" /></div>
+        <div class="field"><label>Total months</label><input type="number" id="total-months" placeholder="0" min="0" oninput="calcTotals()" /></div>
       </div>
       <div style="margin-top:12px">
-        <div class="field">
-          <label>Notes (optional)</label>
-          <textarea id="notes" placeholder="Scope assumptions, caveats, context…"></textarea>
-        </div>
+        <div class="field"><label>Notes (optional)</label><textarea id="notes" placeholder="Scope assumptions, caveats, context…"></textarea></div>
       </div>
     </div>
 
     <div class="form-section">
       <div class="form-section-label">Roles</div>
       <div class="roles-list" id="roles-list"></div>
-      <button class="add-role-btn" onclick="addRole()">
-        <span style="font-size:18px;line-height:1">+</span> Add role
-      </button>
+      <button class="add-role-btn" onclick="addRole()"><span style="font-size:18px;line-height:1">+</span> Add role</button>
     </div>
 
     <div class="form-section">
       <div class="form-section-label">Billing &amp; margin</div>
       <div class="billing-row">
-        <div class="field">
-          <label>Total billing amount</label>
-          <input type="number" id="billing-amount" placeholder="0.00" min="0" step="0.01" oninput="calcTotals()" />
-        </div>
-        <div class="field">
-          <label>Total Verge costs <span style="color:var(--text-faint)">(calc)</span></label>
-          <input type="text" id="out-total-costs" readonly placeholder="—" />
-        </div>
+        <div class="field"><label>Total billing amount</label><input type="number" id="billing-amount" placeholder="0.00" min="0" step="0.01" oninput="calcTotals()" /></div>
+        <div class="field"><label>Total Verge costs <span style="color:var(--text-faint)">(calc)</span></label><input type="text" id="out-total-costs" readonly placeholder="—" /></div>
       </div>
       <div class="margin-key">
         <div class="margin-key-header">
@@ -321,16 +327,10 @@
   function pct(n) { if (!isFinite(n)) return '—'; return n.toFixed(1) + '%'; }
   function uid() { return Math.random().toString(36).slice(2, 8); }
   function getTotalMonths() { return parseFloat(document.getElementById('total-months').value) || 0; }
-
-  function billingForMargin(costs, targetPct) { return costs / (1 - targetPct / 100); }
+  function billingForMargin(costs, p) { return costs / (1 - p / 100); }
 
   function deriveRole(r) {
-    let costs = 0;
-    if (r.type === 'fixed') {
-      costs = (r.monthlyFee || 0) * (r.months || 0);
-    } else {
-      costs = (r.hours || 0) * (r.rate || 0);
-    }
+    const costs   = r.type === 'fixed' ? (r.monthlyFee || 0) * (r.months || 0) : (r.hours || 0) * (r.rate || 0);
     const hrsWeek  = (r.hours && r.months) ? (r.hours / r.months) / 4 : null;
     const hrsMonth = hrsWeek ? hrsWeek * 4 : null;
     return { costs, hrsWeek, hrsMonth };
@@ -360,49 +360,34 @@
       { pct: 50, cls: 'pct-50', label: 'Strong target' },
     ];
     rowsEl.innerHTML = targets.map(t => {
-      const billing = billingForMargin(totalCosts, t.pct);
-      const profit  = billing - totalCosts;
-      return `<div class="margin-key-cell">
-        <div class="margin-key-pct ${t.cls}">${t.pct}% — ${t.label}</div>
-        <div class="margin-key-billing">${currency(billing)}</div>
-        <div class="margin-key-profit">+${currency(profit)} profit</div>
-      </div>`;
+      const b = billingForMargin(totalCosts, t.pct);
+      return `<div class="margin-key-cell"><div class="margin-key-pct ${t.cls}">${t.pct}% — ${t.label}</div><div class="margin-key-billing">${currency(b)}</div><div class="margin-key-profit">+${currency(b - totalCosts)} profit</div></div>`;
     }).join('');
   }
 
-  function onRoleTypeChange(id) {
-    syncRolesFromDOM();
-    renderRoles();
-    calcTotals();
-  }
+  function onRoleTypeChange(id) { syncRolesFromDOM(); renderRoles(); calcTotals(); }
 
   function addRole(data) {
     const months = getTotalMonths();
     const r = data || { id: uid(), type: 'hourly', title: '', resource: '', hours: '', rate: '', monthlyFee: '', months };
     if (!data) roles.push(r);
-    renderRoles();
-    calcTotals();
+    renderRoles(); calcTotals();
   }
 
-  function removeRole(id) {
-    roles = roles.filter(r => r.id !== id);
-    renderRoles();
-    calcTotals();
-  }
+  function removeRole(id) { roles = roles.filter(r => r.id !== id); renderRoles(); calcTotals(); }
 
   function syncRolesFromDOM() {
     roles = roles.map(r => {
       const typeEl = document.getElementById(`r-type-${r.id}`);
-      const type   = typeEl ? typeEl.value : (r.type || 'hourly');
+      const type = typeEl ? typeEl.value : (r.type || 'hourly');
       return {
-        id:         r.id,
-        type,
+        id: r.id, type,
         title:      (document.getElementById(`r-title-${r.id}`)    || {}).value || '',
         resource:   (document.getElementById(`r-resource-${r.id}`) || {}).value || '',
         hours:      parseFloat((document.getElementById(`r-hours-${r.id}`) || {}).value) || 0,
         rate:       type === 'hourly' ? (parseFloat((document.getElementById(`r-rate-${r.id}`) || {}).value) || 0) : 0,
         monthlyFee: type === 'fixed'  ? (parseFloat((document.getElementById(`r-mfee-${r.id}`) || {}).value) || 0) : 0,
-        months:     getTotalMonths(),
+        months: getTotalMonths(),
       };
     });
   }
@@ -411,33 +396,15 @@
     const months    = getTotalMonths();
     const container = document.getElementById('roles-list');
     container.innerHTML = '';
-
     roles.forEach((r, idx) => {
       const d    = deriveRole({ ...r, months });
       const type = r.type || 'hourly';
-
       const typeInputs = type === 'hourly'
-        ? `<div class="field">
-             <label>Total hours</label>
-             <input type="number" id="r-hours-${r.id}" placeholder="0" min="0" value="${r.hours || ''}" oninput="syncAndCalc()" />
-           </div>
-           <div class="field">
-             <label>Hourly rate paid</label>
-             <input type="number" id="r-rate-${r.id}" placeholder="0.00" min="0" step="0.01" value="${r.rate || ''}" oninput="syncAndCalc()" />
-           </div>`
-        : `<div class="field">
-             <label>Total hours (for capacity)</label>
-             <input type="number" id="r-hours-${r.id}" placeholder="0" min="0" value="${r.hours || ''}" oninput="syncAndCalc()" />
-           </div>
-           <div class="field">
-             <label>Monthly fee</label>
-             <input type="number" id="r-mfee-${r.id}" placeholder="0.00" min="0" step="0.01" value="${r.monthlyFee || ''}" oninput="syncAndCalc()" />
-           </div>`;
-
-      const costsLabel = type === 'fixed'
-        ? `Verge costs <span style="font-size:9px;color:var(--text-faint)">(fee × months)</span>`
-        : `Verge costs`;
-
+        ? `<div class="field"><label>Total hours</label><input type="number" id="r-hours-${r.id}" placeholder="0" min="0" value="${r.hours||''}" oninput="syncAndCalc()" /></div>
+           <div class="field"><label>Hourly rate paid</label><input type="number" id="r-rate-${r.id}" placeholder="0.00" min="0" step="0.01" value="${r.rate||''}" oninput="syncAndCalc()" /></div>`
+        : `<div class="field"><label>Total hours (capacity)</label><input type="number" id="r-hours-${r.id}" placeholder="0" min="0" value="${r.hours||''}" oninput="syncAndCalc()" /></div>
+           <div class="field"><label>Monthly fee</label><input type="number" id="r-mfee-${r.id}" placeholder="0.00" min="0" step="0.01" value="${r.monthlyFee||''}" oninput="syncAndCalc()" /></div>`;
+      const costsLabel = type === 'fixed' ? `Verge costs <span style="font-size:9px;color:var(--text-faint)">(fee×mo)</span>` : `Verge costs`;
       const div = document.createElement('div');
       div.className = 'role-card';
       div.innerHTML = `
@@ -449,40 +416,23 @@
           <button class="role-remove-btn" onclick="removeRole('${r.id}')">&#x2715;</button>
         </div>
         <div class="role-type-row">
-          <div class="field">
-            <label>Rate type</label>
+          <div class="field"><label>Rate type</label>
             <select id="r-type-${r.id}" onchange="onRoleTypeChange('${r.id}')">
-              <option value="hourly" ${type === 'hourly' ? 'selected' : ''}>Hourly rate</option>
-              <option value="fixed"  ${type === 'fixed'  ? 'selected' : ''}>Fixed monthly fee</option>
+              <option value="hourly" ${type==='hourly'?'selected':''}>Hourly rate</option>
+              <option value="fixed"  ${type==='fixed'?'selected':''}>Fixed monthly fee</option>
             </select>
           </div>
         </div>
         <div class="role-inputs">
-          <div class="field" style="grid-column:1/-1">
-            <label>Role title</label>
-            <input type="text" id="r-title-${r.id}" placeholder="e.g. Senior Consultant" value="${r.title || ''}" oninput="syncAndCalc()" />
-          </div>
-          <div class="field" style="grid-column:1/-1">
-            <label>Resource name</label>
-            <input type="text" id="r-resource-${r.id}" placeholder="e.g. Alex Johnson" value="${r.resource || ''}" oninput="syncAndCalc()" />
-          </div>
+          <div class="field" style="grid-column:1/-1"><label>Role title</label><input type="text" id="r-title-${r.id}" placeholder="e.g. Senior Consultant" value="${r.title||''}" oninput="syncAndCalc()" /></div>
+          <div class="field" style="grid-column:1/-1"><label>Resource name</label><input type="text" id="r-resource-${r.id}" placeholder="e.g. Alex Johnson" value="${r.resource||''}" oninput="syncAndCalc()" /></div>
           ${typeInputs}
         </div>
         <div class="role-calcs">
-          <div class="role-calc">
-            <div class="role-calc-label">Hrs / week</div>
-            <div class="role-calc-value" id="r-hrsweek-${r.id}">${d.hrsWeek ? d.hrsWeek.toFixed(1) : '—'}</div>
-          </div>
-          <div class="role-calc">
-            <div class="role-calc-label">Hrs / month</div>
-            <div class="role-calc-value" id="r-hrsmonth-${r.id}">${d.hrsMonth ? d.hrsMonth.toFixed(1) : '—'}</div>
-          </div>
-          <div class="role-calc">
-            <div class="role-calc-label">${costsLabel}</div>
-            <div class="role-calc-value" id="r-costs-${r.id}">${d.costs > 0 ? currency(d.costs) : '—'}</div>
-          </div>
-        </div>
-      `;
+          <div class="role-calc"><div class="role-calc-label">Hrs / week</div><div class="role-calc-value" id="r-hrsweek-${r.id}">${d.hrsWeek?d.hrsWeek.toFixed(1):'—'}</div></div>
+          <div class="role-calc"><div class="role-calc-label">Hrs / month</div><div class="role-calc-value" id="r-hrsmonth-${r.id}">${d.hrsMonth?d.hrsMonth.toFixed(1):'—'}</div></div>
+          <div class="role-calc"><div class="role-calc-label">${costsLabel}</div><div class="role-calc-value" id="r-costs-${r.id}">${d.costs>0?currency(d.costs):'—'}</div></div>
+        </div>`;
       container.appendChild(div);
     });
   }
@@ -491,7 +441,7 @@
     syncRolesFromDOM();
     const months = getTotalMonths();
     roles.forEach(r => {
-      const d  = deriveRole({ ...r, months });
+      const d = deriveRole({ ...r, months });
       const hw = document.getElementById(`r-hrsweek-${r.id}`);
       const hm = document.getElementById(`r-hrsmonth-${r.id}`);
       const rc = document.getElementById(`r-costs-${r.id}`);
@@ -512,24 +462,19 @@
       if (hw) hw.textContent = d.hrsWeek  ? d.hrsWeek.toFixed(1)  : '—';
       if (hm) hm.textContent = d.hrsMonth ? d.hrsMonth.toFixed(1) : '—';
     });
-
     const billing = parseFloat(document.getElementById('billing-amount').value) || 0;
     const t = deriveTotals(roles, billing);
-
     document.getElementById('out-total-costs').value = t.totalCosts > 0 ? currency(t.totalCosts) : '';
-    document.getElementById('m-billing').textContent  = billing > 0 ? currency(billing) : '—';
-    document.getElementById('m-costs').textContent    = t.totalCosts > 0 ? currency(t.totalCosts) : '—';
-    document.getElementById('m-hours').textContent    = t.totalHours > 0 ? t.totalHours : '—';
-    document.getElementById('m-roles').textContent    = roles.length || '—';
-
+    document.getElementById('m-billing').textContent = billing > 0 ? currency(billing) : '—';
+    document.getElementById('m-costs').textContent   = t.totalCosts > 0 ? currency(t.totalCosts) : '—';
+    document.getElementById('m-hours').textContent   = t.totalHours > 0 ? t.totalHours : '—';
+    document.getElementById('m-roles').textContent   = roles.length || '—';
     const profEl = document.getElementById('m-profit');
     profEl.textContent = billing > 0 ? currency(t.netProfit) : '—';
     profEl.className = 'metric-value' + (billing > 0 ? (t.netProfit >= 0 ? ' pos' : ' neg') : '');
-
     const margEl = document.getElementById('m-margin');
     margEl.textContent = isFinite(t.margin) ? pct(t.margin) : '—';
     margEl.className = 'metric-value' + (isFinite(t.margin) ? (t.margin >= 0 ? ' pos' : ' neg') : '');
-
     renderMarginKey(t.totalCosts);
   }
 
@@ -569,7 +514,6 @@
     const flash = document.getElementById('save-flash');
     btn.disabled = true; btn.textContent = 'Saving…'; flash.className = 'save-flash';
     syncRolesFromDOM();
-
     const record = {
       id: editingId || Date.now().toString(),
       name: document.getElementById('eng-name').value.trim() || 'Unnamed engagement',
@@ -580,15 +524,12 @@
       author: config.author,
       savedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
     };
-
     let base = [...cachedEstimates];
     const idx = base.findIndex(e => e.id === record.id);
     if (idx >= 0) base[idx] = record; else base.unshift(record);
-
     try {
       await pushEstimates(base);
-      editingId = null;
-      renderSaved();
+      editingId = null; renderSaved();
       const n = base.length;
       setSyncStatus('ok', `connected · ${n} estimate${n !== 1 ? 's' : ''}`);
       flash.textContent = 'Saved ✓'; flash.className = 'save-flash show';
@@ -606,8 +547,7 @@
       await pushEstimates(filtered);
       if (editingId === id) clearForm();
       renderSaved();
-      const n = filtered.length;
-      setSyncStatus('ok', `connected · ${n} estimate${n !== 1 ? 's' : ''}`);
+      setSyncStatus('ok', `connected · ${filtered.length} estimate${filtered.length !== 1 ? 's' : ''}`);
     } catch(err) { alert('Delete failed: ' + err.message); }
   }
 
@@ -620,8 +560,7 @@
     document.getElementById('billing-amount').value = est.billingAmount || '';
     document.getElementById('notes').value          = est.notes || '';
     roles = (est.roles || []).map(r => ({ ...r }));
-    renderRoles();
-    calcTotals();
+    renderRoles(); calcTotals();
     document.getElementById('editing-label').textContent = 'Editing: ' + est.name;
     renderSaved();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -629,14 +568,8 @@
 
   function clearForm() {
     editingId = null;
-    document.getElementById('eng-name').value        = '';
-    document.getElementById('total-months').value    = '';
-    document.getElementById('billing-amount').value  = '';
-    document.getElementById('notes').value           = '';
-    document.getElementById('out-total-costs').value = '';
-    roles = [];
-    renderRoles();
-    calcTotals();
+    ['eng-name','total-months','billing-amount','notes','out-total-costs'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    roles = []; renderRoles(); calcTotals();
     document.getElementById('editing-label').textContent = 'Fill in the fields below — totals update automatically';
     renderSaved();
   }
@@ -651,17 +584,11 @@
       const t = deriveTotals(est.roles || [], est.billingAmount);
       const isEditing = editingId === est.id;
       const badgeClass = isFinite(t.margin) ? (t.margin >= 0 ? 'pos' : 'neg') : 'pos';
-      const roleNames = (est.roles || []).map(r => {
-        const name = r.resource ? `${r.title || 'Untitled'} (${r.resource})` : (r.title || 'Untitled');
-        return name;
-      }).join(', ');
+      const roleNames = (est.roles || []).map(r => r.resource ? `${r.title||'Untitled'} (${r.resource})` : (r.title||'Untitled')).join(', ');
       const card = document.createElement('div');
       card.className = 'saved-card' + (isEditing ? ' editing' : '');
       card.innerHTML = `
-        <div class="sc-top">
-          <div class="sc-name">${est.name}</div>
-          <button class="del-btn" title="Delete">&#x2715;</button>
-        </div>
+        <div class="sc-top"><div class="sc-name">${est.name}</div><button class="del-btn" title="Delete">&#x2715;</button></div>
         <div class="sc-roles">${(est.roles||[]).length} role${(est.roles||[]).length!==1?'s':''} · ${est.totalMonths||0}mo${roleNames?' · '+roleNames:''}</div>
         <div class="sc-stats">
           <span class="sc-stat">Billing: ${currency(t.billing)}</span>
@@ -671,11 +598,7 @@
           <span class="sc-stat">Net: ${currency(t.netProfit)}</span>
           <span class="sc-stat">Costs: ${currency(t.totalCosts)}</span>
         </div>
-        <div class="sc-footer">
-          <span class="sc-author">${est.author||''}</span>
-          <span class="sc-date">${est.savedAt||''}</span>
-        </div>
-      `;
+        <div class="sc-footer"><span class="sc-author">${est.author||''}</span><span class="sc-date">${est.savedAt||''}</span></div>`;
       card.querySelector('.del-btn').addEventListener('click', (e) => deleteEstimate(e, est.id));
       card.addEventListener('click', (e) => { if (e.target.classList.contains('del-btn')) return; loadEstimate(est.id); });
       list.appendChild(card);
