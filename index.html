@@ -75,17 +75,24 @@
   .field input:focus { border-color: var(--border-strong); }
   .field input::placeholder { color: var(--text-faint); }
   .field input[readonly] { background: var(--surface2); color: var(--text-muted); cursor: default; }
+  .field select { height: 38px; border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 0 10px; font-family: var(--mono); font-size: 13px; color: var(--text); outline: none; width: 100%; cursor: pointer; }
+  .field select:focus { border-color: var(--border-strong); }
   .field textarea { border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 8px 10px; font-family: var(--sans); font-size: 14px; color: var(--text); outline: none; resize: vertical; width: 100%; min-height: 64px; }
   .field textarea:focus { border-color: var(--border-strong); }
   .field textarea::placeholder { color: var(--text-faint); }
 
-  /* Roles */
+  .role-type-pill { font-family: var(--mono); font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .role-type-pill.hourly { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+  .role-type-pill.fixed { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+
   .roles-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
   .role-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
   .role-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .role-card-title-group { display: flex; align-items: center; gap: 8px; }
   .role-card-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
   .role-remove-btn { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 14px; padding: 2px 4px; line-height: 1; }
   .role-remove-btn:hover { color: var(--red); }
+  .role-type-row { margin-bottom: 10px; }
   .role-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .role-calcs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
   .role-calc { background: var(--surface); border-radius: 6px; padding: 8px 10px; }
@@ -94,10 +101,8 @@
   .add-role-btn { display: flex; align-items: center; gap: 7px; background: none; border: 1px dashed var(--border-strong); border-radius: 8px; padding: 10px 16px; cursor: pointer; color: var(--text-muted); font-family: var(--sans); font-size: 14px; width: 100%; transition: border-color 0.15s, color 0.15s; }
   .add-role-btn:hover { border-color: var(--text-muted); color: var(--text); }
 
-  /* Billing */
   .billing-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
 
-  /* Margin key */
   .margin-key { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .margin-key-header { background: var(--surface2); padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; }
   .margin-key-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
@@ -112,7 +117,6 @@
   .margin-key-profit { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
   .margin-key-empty { font-family: var(--mono); font-size: 11px; color: var(--text-faint); padding: 12px 14px; background: var(--surface); grid-column: 1 / -1; }
 
-  /* Metrics */
   .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
   .metric { background: var(--surface); padding: 1.1rem 1rem; }
   .metric-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 5px; }
@@ -318,19 +322,22 @@
   function uid() { return Math.random().toString(36).slice(2, 8); }
   function getTotalMonths() { return parseFloat(document.getElementById('total-months').value) || 0; }
 
-  function billingForMargin(costs, targetMarginPct) {
-    return costs / (1 - targetMarginPct / 100);
-  }
+  function billingForMargin(costs, targetPct) { return costs / (1 - targetPct / 100); }
 
   function deriveRole(r) {
-    const costs    = (r.hours || 0) * (r.rate || 0);
+    let costs = 0;
+    if (r.type === 'fixed') {
+      costs = (r.monthlyFee || 0) * (r.months || 0);
+    } else {
+      costs = (r.hours || 0) * (r.rate || 0);
+    }
     const hrsWeek  = (r.hours && r.months) ? (r.hours / r.months) / 4 : null;
-    const hrsMonth = hrsWeek ? hrsWeek * 4 : null;  // hrs/week * 4
+    const hrsMonth = hrsWeek ? hrsWeek * 4 : null;
     return { costs, hrsWeek, hrsMonth };
   }
 
   function deriveTotals(roles, billingAmount) {
-    const totalCosts = (roles || []).reduce((s, r) => s + (r.hours || 0) * (r.rate || 0), 0);
+    const totalCosts = (roles || []).reduce((s, r) => s + deriveRole(r).costs, 0);
     const totalHours = (roles || []).reduce((s, r) => s + (r.hours || 0), 0);
     const billing    = billingAmount || 0;
     const netProfit  = billing - totalCosts;
@@ -338,7 +345,6 @@
     return { totalCosts, totalHours, billing, netProfit, margin };
   }
 
-  /* ── Margin key ── */
   function renderMarginKey(totalCosts) {
     const rowsEl = document.getElementById('margin-key-rows');
     const subEl  = document.getElementById('margin-key-sub');
@@ -356,19 +362,23 @@
     rowsEl.innerHTML = targets.map(t => {
       const billing = billingForMargin(totalCosts, t.pct);
       const profit  = billing - totalCosts;
-      return `
-        <div class="margin-key-cell">
-          <div class="margin-key-pct ${t.cls}">${t.pct}% — ${t.label}</div>
-          <div class="margin-key-billing">${currency(billing)}</div>
-          <div class="margin-key-profit">+${currency(profit)} profit</div>
-        </div>`;
+      return `<div class="margin-key-cell">
+        <div class="margin-key-pct ${t.cls}">${t.pct}% — ${t.label}</div>
+        <div class="margin-key-billing">${currency(billing)}</div>
+        <div class="margin-key-profit">+${currency(profit)} profit</div>
+      </div>`;
     }).join('');
   }
 
-  /* ── Roles ── */
+  function onRoleTypeChange(id) {
+    syncRolesFromDOM();
+    renderRoles();
+    calcTotals();
+  }
+
   function addRole(data) {
     const months = getTotalMonths();
-    const r = data || { id: uid(), title: '', hours: '', rate: '', months };
+    const r = data || { id: uid(), type: 'hourly', title: '', resource: '', hours: '', rate: '', monthlyFee: '', months };
     if (!data) roles.push(r);
     renderRoles();
     calcTotals();
@@ -381,41 +391,82 @@
   }
 
   function syncRolesFromDOM() {
-    roles = roles.map(r => ({
-      id:     r.id,
-      title:  document.getElementById(`r-title-${r.id}`).value,
-      hours:  parseFloat(document.getElementById(`r-hours-${r.id}`).value) || 0,
-      rate:   parseFloat(document.getElementById(`r-rate-${r.id}`).value) || 0,
-      months: getTotalMonths(),
-    }));
+    roles = roles.map(r => {
+      const typeEl = document.getElementById(`r-type-${r.id}`);
+      const type   = typeEl ? typeEl.value : (r.type || 'hourly');
+      return {
+        id:         r.id,
+        type,
+        title:      (document.getElementById(`r-title-${r.id}`)    || {}).value || '',
+        resource:   (document.getElementById(`r-resource-${r.id}`) || {}).value || '',
+        hours:      parseFloat((document.getElementById(`r-hours-${r.id}`) || {}).value) || 0,
+        rate:       type === 'hourly' ? (parseFloat((document.getElementById(`r-rate-${r.id}`) || {}).value) || 0) : 0,
+        monthlyFee: type === 'fixed'  ? (parseFloat((document.getElementById(`r-mfee-${r.id}`) || {}).value) || 0) : 0,
+        months:     getTotalMonths(),
+      };
+    });
   }
 
   function renderRoles() {
-    const months = getTotalMonths();
+    const months    = getTotalMonths();
     const container = document.getElementById('roles-list');
     container.innerHTML = '';
+
     roles.forEach((r, idx) => {
-      const d = deriveRole({ ...r, months });
+      const d    = deriveRole({ ...r, months });
+      const type = r.type || 'hourly';
+
+      const typeInputs = type === 'hourly'
+        ? `<div class="field">
+             <label>Total hours</label>
+             <input type="number" id="r-hours-${r.id}" placeholder="0" min="0" value="${r.hours || ''}" oninput="syncAndCalc()" />
+           </div>
+           <div class="field">
+             <label>Hourly rate paid</label>
+             <input type="number" id="r-rate-${r.id}" placeholder="0.00" min="0" step="0.01" value="${r.rate || ''}" oninput="syncAndCalc()" />
+           </div>`
+        : `<div class="field">
+             <label>Total hours (for capacity)</label>
+             <input type="number" id="r-hours-${r.id}" placeholder="0" min="0" value="${r.hours || ''}" oninput="syncAndCalc()" />
+           </div>
+           <div class="field">
+             <label>Monthly fee</label>
+             <input type="number" id="r-mfee-${r.id}" placeholder="0.00" min="0" step="0.01" value="${r.monthlyFee || ''}" oninput="syncAndCalc()" />
+           </div>`;
+
+      const costsLabel = type === 'fixed'
+        ? `Verge costs <span style="font-size:9px;color:var(--text-faint)">(fee × months)</span>`
+        : `Verge costs`;
+
       const div = document.createElement('div');
       div.className = 'role-card';
       div.innerHTML = `
         <div class="role-card-header">
-          <span class="role-card-title">Role ${idx + 1}</span>
+          <div class="role-card-title-group">
+            <span class="role-card-title">Role ${idx + 1}</span>
+            <span class="role-type-pill ${type}">${type === 'fixed' ? 'Fixed fee' : 'Hourly'}</span>
+          </div>
           <button class="role-remove-btn" onclick="removeRole('${r.id}')">&#x2715;</button>
+        </div>
+        <div class="role-type-row">
+          <div class="field">
+            <label>Rate type</label>
+            <select id="r-type-${r.id}" onchange="onRoleTypeChange('${r.id}')">
+              <option value="hourly" ${type === 'hourly' ? 'selected' : ''}>Hourly rate</option>
+              <option value="fixed"  ${type === 'fixed'  ? 'selected' : ''}>Fixed monthly fee</option>
+            </select>
+          </div>
         </div>
         <div class="role-inputs">
           <div class="field" style="grid-column:1/-1">
             <label>Role title</label>
             <input type="text" id="r-title-${r.id}" placeholder="e.g. Senior Consultant" value="${r.title || ''}" oninput="syncAndCalc()" />
           </div>
-          <div class="field">
-            <label>Total hours</label>
-            <input type="number" id="r-hours-${r.id}" placeholder="0" min="0" value="${r.hours || ''}" oninput="syncAndCalc()" />
+          <div class="field" style="grid-column:1/-1">
+            <label>Resource name</label>
+            <input type="text" id="r-resource-${r.id}" placeholder="e.g. Alex Johnson" value="${r.resource || ''}" oninput="syncAndCalc()" />
           </div>
-          <div class="field">
-            <label>Hourly rate paid</label>
-            <input type="number" id="r-rate-${r.id}" placeholder="0.00" min="0" step="0.01" value="${r.rate || ''}" oninput="syncAndCalc()" />
-          </div>
+          ${typeInputs}
         </div>
         <div class="role-calcs">
           <div class="role-calc">
@@ -427,8 +478,8 @@
             <div class="role-calc-value" id="r-hrsmonth-${r.id}">${d.hrsMonth ? d.hrsMonth.toFixed(1) : '—'}</div>
           </div>
           <div class="role-calc">
-            <div class="role-calc-label">Verge costs</div>
-            <div class="role-calc-value" id="r-costs-${r.id}">${r.hours && r.rate ? currency(d.costs) : '—'}</div>
+            <div class="role-calc-label">${costsLabel}</div>
+            <div class="role-calc-value" id="r-costs-${r.id}">${d.costs > 0 ? currency(d.costs) : '—'}</div>
           </div>
         </div>
       `;
@@ -446,7 +497,7 @@
       const rc = document.getElementById(`r-costs-${r.id}`);
       if (hw) hw.textContent = d.hrsWeek  ? d.hrsWeek.toFixed(1)  : '—';
       if (hm) hm.textContent = d.hrsMonth ? d.hrsMonth.toFixed(1) : '—';
-      if (rc) rc.textContent = r.hours && r.rate ? currency(d.costs) : '—';
+      if (rc) rc.textContent = d.costs > 0 ? currency(d.costs) : '—';
     });
     calcTotals();
   }
@@ -482,7 +533,6 @@
     renderMarginKey(t.totalCosts);
   }
 
-  /* ── GitHub ── */
   function ghHeaders() { return { Authorization: `Bearer ${config.token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' }; }
   function fileUrl() { return `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.path}`; }
   function setSyncStatus(state, text) { const el = document.getElementById('sync-status'); el.className = 'sync-status ' + state; document.getElementById('sync-text').textContent = text; }
@@ -601,7 +651,10 @@
       const t = deriveTotals(est.roles || [], est.billingAmount);
       const isEditing = editingId === est.id;
       const badgeClass = isFinite(t.margin) ? (t.margin >= 0 ? 'pos' : 'neg') : 'pos';
-      const roleNames = (est.roles || []).map(r => r.title || 'Untitled').join(', ');
+      const roleNames = (est.roles || []).map(r => {
+        const name = r.resource ? `${r.title || 'Untitled'} (${r.resource})` : (r.title || 'Untitled');
+        return name;
+      }).join(', ');
       const card = document.createElement('div');
       card.className = 'saved-card' + (isEditing ? ' editing' : '');
       card.innerHTML = `
