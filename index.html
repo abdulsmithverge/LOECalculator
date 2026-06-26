@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Verge Margin Calculator</title>
+<title>Verge LOE & Margin Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
@@ -234,7 +234,7 @@
       <polygon points="11,2 18,10 11,18 4,10" fill="#18169E" opacity="0.85"/>
       <polygon points="15,0 24,10 15,20 6,10" fill="#1AE5D0" opacity="0.85"/>
     </svg>
-    <span class="header-brand">verge <strong>margin calculator</strong></span>
+    <span class="header-brand">verge <strong>LOE & margin calculator</strong></span>
   </div>
   <div class="header-right">
     <span class="sync-status loading" id="sync-status"><span class="sync-dot"></span><span id="sync-text">not connected</span></span>
@@ -387,17 +387,18 @@
         hours:      parseFloat((document.getElementById(`r-hours-${r.id}`) || {}).value) || 0,
         rate:       type === 'hourly' ? (parseFloat((document.getElementById(`r-rate-${r.id}`) || {}).value) || 0) : 0,
         monthlyFee: type === 'fixed'  ? (parseFloat((document.getElementById(`r-mfee-${r.id}`) || {}).value) || 0) : 0,
-        months: getTotalMonths(),
+        months:     parseFloat((document.getElementById(`r-months-${r.id}`) || {}).value) || getTotalMonths(),
       };
     });
   }
 
   function renderRoles() {
-    const months    = getTotalMonths();
+    const engMonths = getTotalMonths();
     const container = document.getElementById('roles-list');
     container.innerHTML = '';
     roles.forEach((r, idx) => {
-      const d    = deriveRole({ ...r, months });
+      const roleMonths = r.months || engMonths;
+      const d    = deriveRole({ ...r, months: roleMonths });
       const type = r.type || 'hourly';
       const typeInputs = type === 'hourly'
         ? `<div class="field"><label>Total hours</label><input type="number" id="r-hours-${r.id}" placeholder="0" min="0" value="${r.hours||''}" oninput="syncAndCalc()" /></div>
@@ -427,6 +428,7 @@
           <div class="field" style="grid-column:1/-1"><label>Role title</label><input type="text" id="r-title-${r.id}" placeholder="e.g. Senior Consultant" value="${r.title||''}" oninput="syncAndCalc()" /></div>
           <div class="field" style="grid-column:1/-1"><label>Resource name</label><input type="text" id="r-resource-${r.id}" placeholder="e.g. Alex Johnson" value="${r.resource||''}" oninput="syncAndCalc()" /></div>
           ${typeInputs}
+          <div class="field"><label>Months on engagement</label><input type="number" id="r-months-${r.id}" placeholder="${engMonths||0}" min="0" max="${engMonths||999}" value="${roleMonths||''}" oninput="syncAndCalc()" /></div>
         </div>
         <div class="role-calcs">
           <div class="role-calc"><div class="role-calc-label">Hrs / week</div><div class="role-calc-value" id="r-hrsweek-${r.id}">${d.hrsWeek?d.hrsWeek.toFixed(1):'—'}</div></div>
@@ -439,9 +441,8 @@
 
   function syncAndCalc() {
     syncRolesFromDOM();
-    const months = getTotalMonths();
     roles.forEach(r => {
-      const d = deriveRole({ ...r, months });
+      const d = deriveRole(r);
       const hw = document.getElementById(`r-hrsweek-${r.id}`);
       const hm = document.getElementById(`r-hrsmonth-${r.id}`);
       const rc = document.getElementById(`r-costs-${r.id}`);
@@ -453,8 +454,6 @@
   }
 
   function calcTotals() {
-    const months = getTotalMonths();
-    roles = roles.map(r => ({ ...r, months }));
     roles.forEach(r => {
       const d  = deriveRole(r);
       const hw = document.getElementById(`r-hrsweek-${r.id}`);
