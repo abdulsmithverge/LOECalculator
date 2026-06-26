@@ -542,6 +542,13 @@
     e.stopPropagation();
     if (!confirm('Delete this estimate for the whole team?')) return;
     try {
+      // Always fetch latest before deleting to avoid SHA mismatch
+      const res = await fetch(fileUrl(), { headers: ghHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        cachedSha = data.sha;
+        cachedEstimates = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
+      }
       const filtered = cachedEstimates.filter(x => x.id !== id);
       await pushEstimates(filtered);
       if (editingId === id) clearForm();
