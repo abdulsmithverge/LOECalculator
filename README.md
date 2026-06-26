@@ -1,4 +1,4 @@
-# Verge Margin Calculator
+# Verge LOE & Margin Calculator
 
 An internal tool for scoping new business engagements — estimating level of effort, Verge costs, billing targets, and net profit margin across multiple roles.
 
@@ -33,7 +33,7 @@ Abdul will send you an invite to this repo. Check your email and accept it befor
 
 ### Step 3 — Generate a Personal Access Token (PAT)
 1. Go to [github.com/settings/tokens/new](https://github.com/settings/tokens/new)
-2. Give it a name like `Verge Margin Calculator`
+2. Give it a name like `Verge LOE & Margin Calculator`
 3. Set expiration to **No expiration**
 4. Check the **repo** scope (top-level checkbox)
 5. Click **Generate token**
@@ -91,9 +91,9 @@ The margin reference key appears in the Billing & margin section once role costs
 
 | Target | Description |
 |---|---|
-| 40% | Minimum acceptable margin |
-| 45% | Mid target |
-| 50% | Strong target |
+| 40% | Margin Floor |
+| 45% | Margin Target |
+| 50% | Margin Target for Complex Engagements |
 
 Formula: `billing = total costs ÷ (1 − target margin)`
 
