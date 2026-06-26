@@ -44,13 +44,13 @@
     "id": "1782496035921",
     "name": "Focus Consulting - Fractional HR Support",
     "totalMonths": 5,
-    "billingAmount": 130000,
+    "billingAmount": 123000,
     "notes": "Performance Management",
     "roles": [
       {
         "id": "l9vxct",
         "type": "hourly",
-        "title": "Account and Client Lead (Eloise)",
+        "title": "Account and Client Lead (Abdul / Eloise)",
         "resource": "",
         "hours": 100,
         "rate": 119,
@@ -70,12 +70,12 @@
       {
         "id": "xh47rz",
         "type": "hourly",
-        "title": "Sr. Recruiter for just the BD role  ",
+        "title": "Sr. Recruiter for the BD role  ",
         "resource": "CJ",
-        "hours": 200,
+        "hours": 160,
         "rate": 112,
         "monthlyFee": 0,
-        "months": 5
+        "months": 4
       }
     ],
     "author": "Abdul Smith",
