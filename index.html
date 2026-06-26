@@ -355,9 +355,9 @@
     }
     subEl.textContent = `Based on ${currency(totalCosts)} total costs`;
     const targets = [
-      { pct: 40, cls: 'pct-40', label: 'Minimum target' },
-      { pct: 45, cls: 'pct-45', label: 'Mid target' },
-      { pct: 50, cls: 'pct-50', label: 'Strong target' },
+      { pct: 40, cls: 'pct-40', label: 'Margin Floor' },
+      { pct: 45, cls: 'pct-45', label: 'Margin Target' },
+      { pct: 50, cls: 'pct-50', label: 'Margin Target for Complex Engagements' },
     ];
     rowsEl.innerHTML = targets.map(t => {
       const b = billingForMargin(totalCosts, t.pct);
