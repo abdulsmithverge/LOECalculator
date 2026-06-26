@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Verge Margin Calculator — Dashboard</title>
+<title>Verge LOE & Margin Calculator — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
@@ -170,7 +170,7 @@
       <polygon points="11,2 18,10 11,18 4,10" fill="#18169E" opacity="0.85"/>
       <polygon points="15,0 24,10 15,20 6,10" fill="#1AE5D0" opacity="0.85"/>
     </svg>
-    <span class="header-brand">verge <strong>margin calculator</strong></span>
+    <span class="header-brand">verge <strong>LOE & margin calculator</strong></span>
   </div>
   <div class="header-right">
     <span class="sync-status loading" id="sync-status"><span class="sync-dot"></span><span id="sync-text">not connected</span></span>
@@ -361,6 +361,7 @@
           <div class="role-row-detail">
             <div class="role-detail-grid">
               <div class="role-detail-cell"><div class="role-detail-label">Total hours</div><div class="role-detail-value">${r.hours||'—'}</div></div>
+              <div class="role-detail-cell"><div class="role-detail-label">Months on eng.</div><div class="role-detail-value">${r.months||'—'}</div></div>
               <div class="role-detail-cell"><div class="role-detail-label">${rType==='fixed'?'Monthly fee':'Hourly rate'}</div><div class="role-detail-value">${rType==='fixed'?currency(r.monthlyFee)+'/mo':currency(r.rate)+'/hr'}</div></div>
               <div class="role-detail-cell"><div class="role-detail-label">Verge costs</div><div class="role-detail-value">${currency(rd.costs)}</div></div>
               <div class="role-detail-cell"><div class="role-detail-label">Hrs / week</div><div class="role-detail-value">${rd.hrsWeek?rd.hrsWeek.toFixed(1):'—'}</div></div>
