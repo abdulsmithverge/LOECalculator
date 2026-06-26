@@ -3,7 +3,7 @@
     "id": "1782498758059",
     "name": "Focus Consulting - Fractional HR Support",
     "totalMonths": 5,
-    "billingAmount": 125000,
+    "billingAmount": 140000,
     "notes": "Performance Management",
     "roles": [
       {
@@ -31,10 +31,10 @@
         "type": "hourly",
         "title": "Sr. Recruiter for the BD role  ",
         "resource": "CJ",
-        "hours": 200,
+        "hours": 280,
         "rate": 112,
         "monthlyFee": 0,
-        "months": 4
+        "months": 5
       }
     ],
     "author": "Abdul Smith",
