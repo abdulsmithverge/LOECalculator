@@ -485,20 +485,23 @@
     if (!config) return;
     setSyncStatus('loading', 'syncing…');
     try {
-      const res = await fetch(fileUrl(), { headers: ghHeaders() });
-      if (res.status === 404) { cachedEstimates = []; cachedSha = null; renderSaved(); setSyncStatus('ok', 'connected · 0 estimates'); return; }
-      if (!res.ok) throw new Error(`GitHub ${res.status}`);
-      const data = await res.json();
-      cachedSha = data.sha;
-      cachedEstimates = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
+      await fetchLatest();
       renderSaved();
       const n = cachedEstimates.length;
       setSyncStatus('ok', `connected · ${n} estimate${n !== 1 ? 's' : ''}`);
     } catch(e) { setSyncStatus('err', 'sync error'); console.error(e); }
   }
 
+  async function fetchLatest() {
+    const res = await fetch(fileUrl(), { headers: ghHeaders() });
+    if (res.status === 404) { cachedSha = null; cachedEstimates = []; return; }
+    if (!res.ok) throw new Error(`GitHub ${res.status}`);
+    const data = await res.json();
+    cachedSha = data.sha;
+    cachedEstimates = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
+  }
+
   async function pushEstimates(estimates) {
-    try { const check = await fetch(fileUrl(), { headers: ghHeaders() }); if (check.ok) { const d = await check.json(); cachedSha = d.sha; } } catch(e) {}
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(estimates, null, 2))));
     const res = await fetch(fileUrl(), { method: 'PUT', headers: ghHeaders(), body: JSON.stringify({ message: `Update estimates (${new Date().toISOString().slice(0,10)})`, content, ...(cachedSha ? { sha: cachedSha } : {}) }) });
     if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `GitHub ${res.status}`); }
@@ -513,6 +516,7 @@
     const flash = document.getElementById('save-flash');
     btn.disabled = true; btn.textContent = 'Saving…'; flash.className = 'save-flash';
     syncRolesFromDOM();
+    try { await fetchLatest(); } catch(e) { flash.textContent = 'Sync error — try again'; flash.className = 'save-flash err'; btn.disabled = false; btn.textContent = 'Save estimate'; return; }
     const record = {
       id: editingId || Date.now().toString(),
       name: document.getElementById('eng-name').value.trim() || 'Unnamed engagement',
@@ -542,13 +546,7 @@
     e.stopPropagation();
     if (!confirm('Delete this estimate for the whole team?')) return;
     try {
-      // Always fetch latest before deleting to avoid SHA mismatch
-      const res = await fetch(fileUrl(), { headers: ghHeaders() });
-      if (res.ok) {
-        const data = await res.json();
-        cachedSha = data.sha;
-        cachedEstimates = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
-      }
+      await fetchLatest();
       const filtered = cachedEstimates.filter(x => x.id !== id);
       await pushEstimates(filtered);
       if (editingId === id) clearForm();
