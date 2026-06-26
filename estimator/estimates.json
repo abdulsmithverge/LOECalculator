@@ -126,33 +126,42 @@
     "id": "1782313186459",
     "name": "Inclined IT Manager Hiring",
     "totalMonths": 2.5,
-    "billingAmount": 25000,
+    "billingAmount": 29000,
     "notes": "IT Operations Manager",
     "roles": [
       {
         "id": "31vw7p",
+        "type": "hourly",
         "title": "Account Lead",
-        "hours": 10,
-        "rate": 145,
+        "resource": "Eloise",
+        "hours": 30,
+        "rate": 119,
+        "monthlyFee": 0,
         "months": 2.5
       },
       {
         "id": "ly003l",
+        "type": "hourly",
         "title": "HRBP/Senior Consultant",
-        "hours": 70,
+        "resource": "Kemi",
+        "hours": 80,
         "rate": 100,
+        "monthlyFee": 0,
         "months": 2.5
       },
       {
         "id": "a82do0",
+        "type": "hourly",
         "title": "Direct Sourcing",
+        "resource": "CJ",
         "hours": 40,
-        "rate": 119,
+        "rate": 112,
+        "monthlyFee": 0,
         "months": 2.5
       }
     ],
-    "author": "Eloise",
-    "savedAt": "Jun 24, 2026"
+    "author": "Abdul Smith",
+    "savedAt": "Jun 26, 2026"
   },
   {
     "id": "1782312206842",
