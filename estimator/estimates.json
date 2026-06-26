@@ -123,38 +123,6 @@
     "savedAt": "Jun 26, 2026"
   },
   {
-    "id": "1782312206842",
-    "name": "Inclined IT Manager Hiring",
-    "totalMonths": 3,
-    "billingAmount": 0,
-    "notes": "IT Operations Manager",
-    "roles": [
-      {
-        "id": "31vw7p",
-        "title": "Account Lead",
-        "hours": 8,
-        "rate": 145,
-        "months": 3
-      },
-      {
-        "id": "ly003l",
-        "title": "HRBP/Senior Consultant",
-        "hours": 72,
-        "rate": 100,
-        "months": 3
-      },
-      {
-        "id": "a82do0",
-        "title": "Direct Sourcing",
-        "hours": 86,
-        "rate": 119,
-        "months": 3
-      }
-    ],
-    "author": "Eloise",
-    "savedAt": "Jun 24, 2026"
-  },
-  {
     "id": "1781640867062",
     "name": "Focus Consulting - Talent Acquisition 2 Roles",
     "totalMonths": 4,
