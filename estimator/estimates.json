@@ -155,47 +155,6 @@
     "savedAt": "Jun 16, 2026"
   },
   {
-    "id": "1781640630680",
-    "name": "Focus Consulting - Fractional HR Support",
-    "totalMonths": 5,
-    "billingAmount": 60000,
-    "notes": "Performance Management",
-    "roles": [
-      {
-        "id": "l9vxct",
-        "type": "hourly",
-        "title": "Account and Client Lead (Eloise)",
-        "resource": "",
-        "hours": 100,
-        "rate": 119,
-        "monthlyFee": 0,
-        "months": 5
-      },
-      {
-        "id": "lxty5c",
-        "type": "hourly",
-        "title": "Senior HRBP Consultant",
-        "resource": "",
-        "hours": 400,
-        "rate": 100,
-        "monthlyFee": 0,
-        "months": 5
-      },
-      {
-        "id": "xh47rz",
-        "type": "hourly",
-        "title": "Sr. Recruiter",
-        "resource": "CJ",
-        "hours": 240,
-        "rate": 112,
-        "monthlyFee": 0,
-        "months": 5
-      }
-    ],
-    "author": "Abdul Smith",
-    "savedAt": "Jun 26, 2026"
-  },
-  {
     "id": "1779990742919",
     "name": "Civilla Ops Assitant Hire",
     "totalMonths": 2,
