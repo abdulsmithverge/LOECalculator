@@ -1,5 +1,36 @@
 [
   {
+    "id": "1783014622227",
+    "name": "Focus Consulting - Talent Acquisition A (BD ONLY)",
+    "totalMonths": 4,
+    "billingAmount": 46225,
+    "notes": "Business Development Hiring ONLY",
+    "roles": [
+      {
+        "id": "swib1m",
+        "type": "hourly",
+        "title": "Account and Client Lead",
+        "resource": "Abdul handing off to Eloise in August",
+        "hours": 48,
+        "rate": 119,
+        "monthlyFee": 0,
+        "months": 4
+      },
+      {
+        "id": "aeroxy",
+        "type": "hourly",
+        "title": "Senior Recruiter",
+        "resource": "CJ",
+        "hours": 176,
+        "rate": 112,
+        "monthlyFee": 0,
+        "months": 4
+      }
+    ],
+    "author": "Eloise",
+    "savedAt": "Jul 2, 2026"
+  },
+  {
     "id": "1782510130349",
     "name": "Focus Consulting - Fractional HR Support",
     "totalMonths": 5,
