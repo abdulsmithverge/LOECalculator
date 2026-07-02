@@ -1,5 +1,36 @@
 [
   {
+    "id": "1783015012311",
+    "name": "Focus Consulting - Talent Acquisition B (Bundled BD and HR)",
+    "totalMonths": 5,
+    "billingAmount": 65564,
+    "notes": "",
+    "roles": [
+      {
+        "id": "99dtd5",
+        "type": "hourly",
+        "title": "Account and Client Lead",
+        "resource": "Abdul handing off to Eloise in August",
+        "hours": 40,
+        "rate": 118.94,
+        "monthlyFee": 0,
+        "months": 5
+      },
+      {
+        "id": "9heqd2",
+        "type": "hourly",
+        "title": "Senior Recruiter",
+        "resource": "CJ",
+        "hours": 280,
+        "rate": 112,
+        "monthlyFee": 0,
+        "months": 5
+      }
+    ],
+    "author": "Eloise",
+    "savedAt": "Jul 2, 2026"
+  },
+  {
     "id": "1783014622227",
     "name": "Focus Consulting - Talent Acquisition A (BD ONLY)",
     "totalMonths": 4,
