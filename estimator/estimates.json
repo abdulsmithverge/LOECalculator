@@ -1,5 +1,36 @@
 [
   {
+    "id": "1784241459085",
+    "name": "Civilla Design Lead Hiring",
+    "totalMonths": 2.5,
+    "billingAmount": 37000,
+    "notes": "Sprint to hire a Design Lead by mid-late September,",
+    "roles": [
+      {
+        "id": "7ipi44",
+        "type": "hourly",
+        "title": "Client Lead",
+        "resource": "Abdul",
+        "hours": 50,
+        "rate": 119,
+        "monthlyFee": 0,
+        "months": 2.5
+      },
+      {
+        "id": "ckuzhz",
+        "type": "hourly",
+        "title": "Sr. Consultant (Recruiter)",
+        "resource": "Daniella",
+        "hours": 140,
+        "rate": 100,
+        "monthlyFee": 0,
+        "months": 2.5
+      }
+    ],
+    "author": "Abdul Smith",
+    "savedAt": "Jul 16, 2026"
+  },
+  {
     "id": "1783015012311",
     "name": "Focus Consulting - Talent Acquisition B (Bundled BD and HR)",
     "totalMonths": 5,
