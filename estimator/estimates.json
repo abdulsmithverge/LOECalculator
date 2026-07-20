@@ -1,5 +1,36 @@
 [
   {
+    "id": "1784562589066",
+    "name": "Civilla Leadership Team Roles & Responsibilities",
+    "totalMonths": 4,
+    "billingAmount": 35000,
+    "notes": "Civilla is experiencing a period of growth as well as an evolution of their leadership team. To meet the moment, the team is seeking greater clarity on leadership roles and responsibilities across their leadership team. Verge has been asked to help guide Civilla through this work, by providing a trusted framework for this work as well as serve as a thought partner to the team through this transition. This proposal outlines a systematic approach to align the leadership team’s time and talents with Civilla’s highest-priority organizational needs.",
+    "roles": [
+      {
+        "id": "opdxzx",
+        "type": "hourly",
+        "title": "Client Lead",
+        "resource": "Eloise",
+        "hours": 120,
+        "rate": 111.97,
+        "monthlyFee": 0,
+        "months": 4
+      },
+      {
+        "id": "k2f6fv",
+        "type": "hourly",
+        "title": "Account Lead",
+        "resource": "Abdul",
+        "hours": 48,
+        "rate": 119,
+        "monthlyFee": 0,
+        "months": 4
+      }
+    ],
+    "author": "Eloise",
+    "savedAt": "Jul 20, 2026"
+  },
+  {
     "id": "1784241459085",
     "name": "Civilla Design Lead Hiring",
     "totalMonths": 2.5,
