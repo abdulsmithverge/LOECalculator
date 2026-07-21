@@ -644,9 +644,26 @@
     await fetchEstimates();
   }
 
-  if (config) { document.getElementById('setup-overlay').classList.add('hidden'); setSyncStatus('loading', 'syncing…'); fetchEstimates(); }
-  else { openSettings(); }
-  addRole();
+  async function init() {
+    if (!config) { openSettings(); addRole(); return; }
+    document.getElementById('setup-overlay').classList.add('hidden');
+    setSyncStatus('loading', 'syncing…');
+    await fetchEstimates();
+    // If ?id= is in the URL, auto-load that estimate into the form
+    const linkedId = new URLSearchParams(window.location.search).get('id');
+    if (linkedId) {
+      const est = cachedEstimates.find(e => e.id === linkedId);
+      if (est) {
+        loadEstimate(linkedId);
+        // Clean up the URL without reloading the page
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    } else {
+      addRole();
+    }
+  }
+
+  init();
 </script>
 </body>
 </html>
