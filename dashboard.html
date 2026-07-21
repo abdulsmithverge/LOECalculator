@@ -131,6 +131,10 @@
   .detail-notes { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
   .detail-notes-label { font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 5px; }
   .detail-footer { display: flex; justify-content: space-between; font-family: 'Poppins', sans-serif; font-size: 11px; color: var(--text-faint); }
+  .copy-link-btn { background: none; border: 1px solid var(--border); border-radius: 5px; font-family: 'Poppins', sans-serif; font-size: 11px; color: var(--text-muted); padding: 3px 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: border-color 0.15s, color 0.15s; }
+  .copy-link-btn:hover { border-color: var(--verge-magenta); color: var(--verge-magenta); }
+  .copy-link-btn.copied { border-color: var(--green); color: var(--green); }
+  .eng-card.highlighted { border-color: var(--verge-magenta); box-shadow: 0 0 0 3px rgba(233,24,194,0.12); }
   .state-msg { text-align: center; padding: 5rem 1rem; font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--text-faint); line-height: 2; }
 
   @media (max-width: 700px) {
@@ -396,13 +400,37 @@
           <div class="roles-section-label">Role breakdown</div>
           <div class="role-rows">${roleRowsHtml}</div>
           ${est.notes?`<div class="detail-notes"><div class="detail-notes-label">Notes</div>${est.notes}</div>`:''}
-          <div class="detail-footer"><span>Saved by ${est.author||'unknown'}</span><span>${est.savedAt||''}</span></div>
+          <div class="detail-footer">
+            <span>Saved by ${est.author||'unknown'} &bull; ${est.savedAt||''}</span>
+            <button class="copy-link-btn" onclick="copyLink(event,'${est.id}')">&#128279; Copy link</button>
+          </div>
         </div>`;
 
       card.querySelector('.eng-header').addEventListener('click', () => card.classList.toggle('open'));
       card.querySelectorAll('.role-row-header').forEach(rh => { rh.addEventListener('click', e => { e.stopPropagation(); rh.closest('.role-row').classList.toggle('open'); }); });
       container.appendChild(card);
     });
+
+    // Auto-expand and scroll to linked estimate if ?id= is in URL
+    const linkedId = new URLSearchParams(window.location.search).get('id');
+    if (linkedId) {
+      const target = container.querySelector(`.eng-card[data-id="${linkedId}"]`);
+      if (target) {
+        target.classList.add('open', 'highlighted');
+        setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      }
+    }
+  }
+
+  function copyLink(e, id) {
+    e.stopPropagation();
+    const url = `${window.location.origin}${window.location.pathname}?id=${id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = e.currentTarget;
+      btn.classList.add('copied');
+      btn.textContent = '✓ Copied';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '&#128279; Copy link'; }, 2000);
+    }).catch(() => { prompt('Copy this link:', url); });
   }
 
   if (config) { document.getElementById('setup-overlay').classList.add('hidden'); setSyncStatus('loading', 'loading…'); fetchEstimates(); }
