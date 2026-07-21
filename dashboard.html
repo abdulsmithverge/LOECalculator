@@ -134,6 +134,8 @@
   .copy-link-btn { background: none; border: 1px solid var(--border); border-radius: 5px; font-family: 'Poppins', sans-serif; font-size: 11px; color: var(--text-muted); padding: 3px 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: border-color 0.15s, color 0.15s; }
   .copy-link-btn:hover { border-color: var(--verge-magenta); color: var(--verge-magenta); }
   .copy-link-btn.copied { border-color: var(--green); color: var(--green); }
+  .open-calc-btn { background: var(--verge-dark); border: none; border-radius: 5px; font-family: 'Poppins', sans-serif; font-size: 11px; color: #fff; padding: 3px 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; text-decoration: none; transition: opacity 0.15s; }
+  .open-calc-btn:hover { opacity: 0.82; }
   .eng-card.highlighted { border-color: var(--verge-magenta); box-shadow: 0 0 0 3px rgba(233,24,194,0.12); }
   .state-msg { text-align: center; padding: 5rem 1rem; font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--text-faint); line-height: 2; }
 
@@ -402,7 +404,10 @@
           ${est.notes?`<div class="detail-notes"><div class="detail-notes-label">Notes</div>${est.notes}</div>`:''}
           <div class="detail-footer">
             <span>Saved by ${est.author||'unknown'} &bull; ${est.savedAt||''}</span>
-            <button class="copy-link-btn" onclick="copyLink(event,'${est.id}')">&#128279; Copy link</button>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <button class="copy-link-btn" onclick="copyLink(event,'${est.id}')">&#128279; Copy link</button>
+              <a class="open-calc-btn" href="index.html?id=${est.id}" onclick="event.stopPropagation()">&#9998; Open in calculator</a>
+            </div>
           </div>
         </div>`;
 
