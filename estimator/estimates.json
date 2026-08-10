@@ -1,5 +1,36 @@
 [
   {
+    "id": "1786383941245",
+    "name": "Inclined Compliance",
+    "totalMonths": 3,
+    "billingAmount": 0,
+    "notes": "",
+    "roles": [
+      {
+        "id": "h7jgkz",
+        "type": "hourly",
+        "title": "Senior HRBP",
+        "resource": "Kemi",
+        "hours": 66,
+        "rate": 100,
+        "monthlyFee": 0,
+        "months": 3
+      },
+      {
+        "id": "3z3z62",
+        "type": "hourly",
+        "title": "Client Lead",
+        "resource": "",
+        "hours": 24,
+        "rate": 112,
+        "monthlyFee": 0,
+        "months": 3
+      }
+    ],
+    "author": "Eloise",
+    "savedAt": "Aug 10, 2026"
+  },
+  {
     "id": "1784562589066",
     "name": "Civilla Leadership Team Roles & Responsibilities",
     "totalMonths": 4,
