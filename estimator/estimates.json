@@ -3,7 +3,7 @@
     "id": "1786395234608",
     "name": "Inclined Kemi Makeup Time",
     "totalMonths": 1,
-    "billingAmount": 0,
+    "billingAmount": 5000,
     "notes": "",
     "roles": [
       {
@@ -18,7 +18,7 @@
       }
     ],
     "author": "Eloise",
-    "savedAt": "Aug 10, 2026"
+    "savedAt": "Aug 11, 2026"
   },
   {
     "id": "1786383941245",
