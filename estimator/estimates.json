@@ -24,7 +24,7 @@
     "id": "1786383941245",
     "name": "Inclined Compliance",
     "totalMonths": 3,
-    "billingAmount": 0,
+    "billingAmount": 19000,
     "notes": "",
     "roles": [
       {
@@ -49,7 +49,7 @@
       }
     ],
     "author": "Eloise",
-    "savedAt": "Aug 10, 2026"
+    "savedAt": "Aug 11, 2026"
   },
   {
     "id": "1784562589066",
