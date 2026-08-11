@@ -21,27 +21,6 @@
     "savedAt": "Aug 10, 2026"
   },
   {
-    "id": "1786384148733",
-    "name": "Inclined Kemi Makeup Time",
-    "totalMonths": 1,
-    "billingAmount": 0,
-    "notes": "",
-    "roles": [
-      {
-        "id": "q36hsz",
-        "type": "hourly",
-        "title": "Senior HRBP",
-        "resource": "Kemi",
-        "hours": 25,
-        "rate": 100,
-        "monthlyFee": 0,
-        "months": 1
-      }
-    ],
-    "author": "Eloise",
-    "savedAt": "Aug 10, 2026"
-  },
-  {
     "id": "1786383941245",
     "name": "Inclined Compliance",
     "totalMonths": 3,
