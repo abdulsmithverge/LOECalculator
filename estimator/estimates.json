@@ -1,5 +1,36 @@
 [
   {
+    "id": "1786567111563",
+    "name": "USDR CTO Search",
+    "totalMonths": 3,
+    "billingAmount": 34000,
+    "notes": "Assuming Verge leads/participates in process design and artifact creation (with contributions from a USDR named SME) and candidate screening - handoff to USDR for interview coordination and candidate management, but reserve some recruiting hours for remaining connected to candidates as they go through the process and have questions, etc..",
+    "roles": [
+      {
+        "id": "6kh98x",
+        "type": "hourly",
+        "title": "Client/Account Lead",
+        "resource": "Abdul ",
+        "hours": 60,
+        "rate": 119,
+        "monthlyFee": 0,
+        "months": 3
+      },
+      {
+        "id": "p0f9zu",
+        "type": "hourly",
+        "title": "Sr Consultant / Recruiter",
+        "resource": "TBD - potentially CJ",
+        "hours": 100,
+        "rate": 112,
+        "monthlyFee": 0,
+        "months": 3
+      }
+    ],
+    "author": "Abdul Smith",
+    "savedAt": "Aug 12, 2026"
+  },
+  {
     "id": "1786383941245",
     "name": "Inclined Compliance",
     "totalMonths": 3,
