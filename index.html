@@ -388,6 +388,7 @@
         rate:       type === 'hourly' ? (parseFloat((document.getElementById(`r-rate-${r.id}`) || {}).value) || 0) : 0,
         monthlyFee: type === 'fixed'  ? (parseFloat((document.getElementById(`r-mfee-${r.id}`) || {}).value) || 0) : 0,
         months:     parseFloat((document.getElementById(`r-months-${r.id}`) || {}).value) || getTotalMonths(),
+        notes:      (document.getElementById(`r-notes-${r.id}`) || {}).value || '',
       };
     });
   }
@@ -429,6 +430,7 @@
           <div class="field" style="grid-column:1/-1"><label>Resource name</label><input type="text" id="r-resource-${r.id}" placeholder="e.g. Alex Johnson" value="${r.resource||''}" oninput="syncAndCalc()" /></div>
           ${typeInputs}
           <div class="field"><label>Months on engagement</label><input type="number" id="r-months-${r.id}" placeholder="${engMonths||0}" min="0" max="${engMonths||999}" value="${roleMonths||''}" oninput="syncAndCalc()" /></div>
+          <div class="field" style="grid-column:1/-1"><label>Role notes (optional)</label><textarea id="r-notes-${r.id}" placeholder="e.g. 10 hrs/week for first 2 months, then 5 hrs/week remainder…" oninput="syncAndCalc()" style="min-height:56px">${r.notes||''}</textarea></div>
         </div>
         <div class="role-calcs">
           <div class="role-calc"><div class="role-calc-label">Hrs / week</div><div class="role-calc-value" id="r-hrsweek-${r.id}">${d.hrsWeek?d.hrsWeek.toFixed(1):'—'}</div></div>
