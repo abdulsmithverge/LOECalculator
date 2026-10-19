@@ -1,5 +1,49 @@
 [
   {
+    "id": "1792430702016",
+    "name": "SolarApp",
+    "totalMonths": 4,
+    "billingAmount": 91000,
+    "notes": "Hiring Engagement 2 FTE Community Managers + 2 p/t roles",
+    "roles": [
+      {
+        "id": "9xaun4",
+        "type": "hourly",
+        "title": "Sr. Consultant/ PM ",
+        "resource": "Michelle Skoor",
+        "hours": 185,
+        "rate": 120,
+        "monthlyFee": 0,
+        "months": 4,
+        "notes": "15 hours a week through 1st week of Jan (not counting last 2 weeks of year and a 10 hour week in november during holiday week), then to 10 hours/week through end of Feb. "
+      },
+      {
+        "id": "0qb4l3",
+        "type": "hourly",
+        "title": "Sr. Consultant/Recruiter",
+        "resource": "Radhika Bhatt",
+        "hours": 220,
+        "rate": 100,
+        "monthlyFee": 0,
+        "months": 4,
+        "notes": "20 hours a week through 1st week of Jan (not counting last 2 weeks of year and a 10 hour week in november during holiday week), then to 10 hours/week through end of Feb. "
+      },
+      {
+        "id": "255iux",
+        "type": "hourly",
+        "title": "Client/Account Lead",
+        "resource": "Abdul Smith",
+        "hours": 48,
+        "rate": 147,
+        "monthlyFee": 0,
+        "months": 4,
+        "notes": ""
+      }
+    ],
+    "author": "Abdul Smith",
+    "savedAt": "Oct 19, 2026"
+  },
+  {
     "id": "1790353851692",
     "name": "USDR SME",
     "totalMonths": 1,
