@@ -44,50 +44,6 @@
     "savedAt": "Oct 19, 2026"
   },
   {
-    "id": "1792434652392",
-    "name": "SolarApp 6 Month retainer",
-    "totalMonths": 6,
-    "billingAmount": 140000,
-    "notes": "Assuming 6 month retainer covering named + not yet named roles",
-    "roles": [
-      {
-        "id": "5nr9np",
-        "type": "hourly",
-        "title": "Sr. Consultant / PM",
-        "resource": "Michelle Skoor",
-        "hours": 293,
-        "rate": 120,
-        "monthlyFee": 0,
-        "months": 6,
-        "notes": "12 hours a week over the life of the engagement"
-      },
-      {
-        "id": "wsjnis",
-        "type": "hourly",
-        "title": "Sr. Consultant / REcruiter",
-        "resource": "Radhika Bhatt",
-        "hours": 340,
-        "rate": 100,
-        "monthlyFee": 0,
-        "months": 6,
-        "notes": "20 hours a week through 1st week of Jan (not counting last 2 weeks of year and a 10 hour week in November during holiday week), then to 10 hours/week through end of Feb. "
-      },
-      {
-        "id": "u6xt5o",
-        "type": "hourly",
-        "title": "Client Lead",
-        "resource": "Abdul",
-        "hours": 75,
-        "rate": 147,
-        "monthlyFee": 0,
-        "months": 6,
-        "notes": ""
-      }
-    ],
-    "author": "Abdul Smith",
-    "savedAt": "Oct 19, 2026"
-  },
-  {
     "id": "1792431150241",
     "name": "SolarApp",
     "totalMonths": 4,
