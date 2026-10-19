@@ -58,7 +58,7 @@
     "id": "1792430702016",
     "name": "SolarApp",
     "totalMonths": 4,
-    "billingAmount": 91000,
+    "billingAmount": 92000,
     "notes": "Hiring Engagement 2 FTE Community Managers + 2 p/t roles",
     "roles": [
       {
@@ -92,6 +92,17 @@
         "rate": 147,
         "monthlyFee": 0,
         "months": 4,
+        "notes": ""
+      },
+      {
+        "id": "0e0opj",
+        "type": "hourly",
+        "title": "Consultant / Sourcer",
+        "resource": "Kaki or Daniella",
+        "hours": 30,
+        "rate": 100,
+        "monthlyFee": 0,
+        "months": 1,
         "notes": ""
       }
     ],
