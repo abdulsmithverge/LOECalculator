@@ -1,5 +1,38 @@
 [
   {
+    "id": "1792510043853",
+    "name": "Inclined Direct Sourcing- Engineering Mgr",
+    "totalMonths": 1,
+    "billingAmount": 0,
+    "notes": "",
+    "roles": [
+      {
+        "id": "vraa43",
+        "type": "hourly",
+        "title": "Practice Director",
+        "resource": "",
+        "hours": 4,
+        "rate": 119,
+        "monthlyFee": 0,
+        "months": 1,
+        "notes": ""
+      },
+      {
+        "id": "yc3ydd",
+        "type": "hourly",
+        "title": "Senior Consultant",
+        "resource": "Kaki",
+        "hours": 20,
+        "rate": 100,
+        "monthlyFee": 0,
+        "months": 1,
+        "notes": ""
+      }
+    ],
+    "author": "Eloise",
+    "savedAt": "Oct 20, 2026"
+  },
+  {
     "id": "1792434895593",
     "name": "SolarApp 6 Month retainer",
     "totalMonths": 6,
