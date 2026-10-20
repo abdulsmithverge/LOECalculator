@@ -1,5 +1,71 @@
 [
   {
+    "id": "1792531710820",
+    "name": "SolarApp 4 month Retainer",
+    "totalMonths": 4,
+    "billingAmount": 145000,
+    "notes": "5-6 roles over 4 months. (potentially)",
+    "roles": [
+      {
+        "id": "3216xf",
+        "type": "hourly",
+        "title": "Sr. Consultant / Recruiter",
+        "resource": "Radhika",
+        "hours": 385,
+        "rate": 115,
+        "monthlyFee": 0,
+        "months": 4,
+        "notes": "15 hours during first week, 25/hours week thereafter"
+      },
+      {
+        "id": "0tn8fc",
+        "type": "hourly",
+        "title": "Sr. Consultant / PM",
+        "resource": "Michelle",
+        "hours": 235,
+        "rate": 120,
+        "monthlyFee": 0,
+        "months": 4,
+        "notes": "10 hrs during first week, 15 hours week thereafter"
+      },
+      {
+        "id": "h835xk",
+        "type": "hourly",
+        "title": "Client Lead",
+        "resource": "Abdul ",
+        "hours": 48,
+        "rate": 147,
+        "monthlyFee": 0,
+        "months": 4,
+        "notes": ""
+      },
+      {
+        "id": "z34dbu",
+        "type": "hourly",
+        "title": "Sr. Consultant / Sourcer",
+        "resource": "TBD",
+        "hours": 50,
+        "rate": 100,
+        "monthlyFee": 0,
+        "months": 2,
+        "notes": ""
+      },
+      {
+        "id": "saqfjs",
+        "type": "fixed",
+        "title": "LI REcruiter seat",
+        "resource": "license",
+        "hours": 4,
+        "rate": 0,
+        "monthlyFee": 130,
+        "months": 4,
+        "notes": ""
+      }
+    ],
+    "author": "Abdul Smith",
+    "savedAt": "Oct 20, 2026"
+  },
+  {
     "id": "1792510043853",
     "name": "Inclined Direct Sourcing- Engineering Mgr",
     "totalMonths": 1,
