@@ -327,7 +327,7 @@
   },
   {
     "id": "1784241459085",
-    "name": "Civilla Design Lead Hiring",
+    "name": "Civilla Design Lead Hiring (WON)",
     "totalMonths": 2.5,
     "billingAmount": 33000,
     "notes": "Sprint to hire a Design Lead by mid-late September,",
@@ -340,7 +340,8 @@
         "hours": 50,
         "rate": 119,
         "monthlyFee": 0,
-        "months": 2.5
+        "months": 2.5,
+        "notes": ""
       },
       {
         "id": "ckuzhz",
@@ -350,11 +351,12 @@
         "hours": 120,
         "rate": 100,
         "monthlyFee": 0,
-        "months": 2.5
+        "months": 2.5,
+        "notes": ""
       }
     ],
     "author": "Abdul Smith",
-    "savedAt": "Jul 21, 2026"
+    "savedAt": "Oct 27, 2026"
   },
   {
     "id": "1783015012311",
