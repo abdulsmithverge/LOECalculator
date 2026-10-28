@@ -1,5 +1,49 @@
 [
   {
+    "id": "1793206828168",
+    "name": "Vertosoft",
+    "totalMonths": 4,
+    "billingAmount": 114500,
+    "notes": "5 open roles, might make two hires for one of the roles if they find two amazing people",
+    "roles": [
+      {
+        "id": "uf47mm",
+        "type": "hourly",
+        "title": "Practice Lead",
+        "resource": "Eloise Thome",
+        "hours": 41,
+        "rate": 119,
+        "monthlyFee": 0,
+        "months": 4,
+        "notes": ""
+      },
+      {
+        "id": "uhgnex",
+        "type": "hourly",
+        "title": "Senior Recruiter",
+        "resource": "TBD",
+        "hours": 480,
+        "rate": 100,
+        "monthlyFee": 0,
+        "months": 4,
+        "notes": ""
+      },
+      {
+        "id": "cu6phy",
+        "type": "hourly",
+        "title": "Direct Sourcer",
+        "resource": "TBD",
+        "hours": 100,
+        "rate": 100,
+        "monthlyFee": 0,
+        "months": 2.5,
+        "notes": ""
+      }
+    ],
+    "author": "Eloise",
+    "savedAt": "Oct 28, 2026"
+  },
+  {
     "id": "1792531710820",
     "name": "SolarApp 4 month Retainer (WON)",
     "totalMonths": 4,
