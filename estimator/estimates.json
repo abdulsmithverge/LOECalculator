@@ -3,15 +3,15 @@
     "id": "1793564163467",
     "name": "Vertosoft",
     "totalMonths": 4,
-    "billingAmount": 109000,
+    "billingAmount": 93000,
     "notes": "5 open roles, might make two hires for one of the roles if they find two amazing people",
     "roles": [
       {
         "id": "uf47mm",
         "type": "hourly",
-        "title": "Executive Sponsor",
+        "title": "Client Lead",
         "resource": "Eloise Thome",
-        "hours": 24,
+        "hours": 80,
         "rate": 119,
         "monthlyFee": 0,
         "months": 4,
@@ -29,30 +29,19 @@
         "notes": ""
       },
       {
-        "id": "cu6phy",
+        "id": "x8fkd5",
         "type": "hourly",
-        "title": "Direct Sourcer",
-        "resource": "TBD",
-        "hours": 80,
-        "rate": 100,
-        "monthlyFee": 0,
-        "months": 2.5,
-        "notes": ""
-      },
-      {
-        "id": "ji3vqh",
-        "type": "hourly",
-        "title": "Project Manager",
-        "resource": "Lynn",
-        "hours": 120,
-        "rate": 100,
+        "title": "Executive Sponsor",
+        "resource": "Abdul Smith",
+        "hours": 40,
+        "rate": 119,
         "monthlyFee": 0,
         "months": 4,
         "notes": ""
       }
     ],
     "author": "Eloise",
-    "savedAt": "Nov 1, 2026"
+    "savedAt": "Nov 2, 2026"
   },
   {
     "id": "1793206828168",
