@@ -36,7 +36,7 @@
     "id": "1793655275523",
     "name": "Vertosoft",
     "totalMonths": 4,
-    "billingAmount": 93000,
+    "billingAmount": 95000,
     "notes": "5 open roles, might make two hires for one of the roles if they find two amazing people",
     "roles": [
       {
@@ -45,7 +45,7 @@
         "title": "Client Lead",
         "resource": "Eloise Thome",
         "hours": 80,
-        "rate": 119,
+        "rate": 146,
         "monthlyFee": 0,
         "months": 4,
         "notes": ""
@@ -67,13 +67,13 @@
         "title": "Executive Sponsor",
         "resource": "Abdul Smith",
         "hours": 40,
-        "rate": 119,
+        "rate": 142,
         "monthlyFee": 0,
         "months": 4,
         "notes": ""
       }
     ],
-    "author": "Eloise",
+    "author": "Abdul Smith",
     "savedAt": "Nov 2, 2026"
   },
   {
