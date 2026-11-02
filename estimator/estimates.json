@@ -1,5 +1,38 @@
 [
   {
+    "id": "1793658878843",
+    "name": "Civilla Montana Researcher",
+    "totalMonths": 1,
+    "billingAmount": 8700,
+    "notes": "Direct sourcing + JD build for p/t Montana researcher",
+    "roles": [
+      {
+        "id": "sv72sy",
+        "type": "hourly",
+        "title": "Client/Engagement Lead",
+        "resource": "Abdul Smith",
+        "hours": 15,
+        "rate": 146,
+        "monthlyFee": 0,
+        "months": 1,
+        "notes": "5 hours week"
+      },
+      {
+        "id": "ol3cy0",
+        "type": "hourly",
+        "title": "Sr. Consultant / Sourcing Specialist",
+        "resource": "Kaki",
+        "hours": 25,
+        "rate": 100,
+        "monthlyFee": 0,
+        "months": 1,
+        "notes": ""
+      }
+    ],
+    "author": "Abdul Smith",
+    "savedAt": "Nov 2, 2026"
+  },
+  {
     "id": "1793655275523",
     "name": "Vertosoft",
     "totalMonths": 4,
